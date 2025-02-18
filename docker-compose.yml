@@ -1,0 +1,35 @@
+version: "3.3"
+
+services:
+  user-management-backend:
+#    image: ${DOCKER_REG}${DOCKER_REPO}${APP_NAME}:${DOCKER_TAG}
+    build:
+      context: ./.
+    container_name: user-management-backend
+    depends_on:
+      - user-management-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-management-db:5432/test_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    ports:
+      - '8086:8080'
+#    labels:
+#      io.portainer.accesscontrol.teams: skillab-all
+
+  user-management-db:
+    image: postgres:14.7
+    container_name: user-management-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: test_db
+    volumes:
+       - user_management_postgresql_data:/var/lib/postgresql/data
+#    ports:
+#      - '5456:5432'
+#    labels:
+#      io.portainer.accesscontrol.teams: skillab-all
+
+volumes:
+  user_management_postgresql_data:
