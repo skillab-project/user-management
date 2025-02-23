@@ -13,11 +13,6 @@ public class UserPrivilegedController {
     @Autowired
     UserPrivilegedService userPrivilegedService;
 
-    @PutMapping("/verify")
-    User verifyUser(@RequestParam String email){
-        return userPrivilegedService.verifyUser(email);
-    }
-
     @PutMapping("/authorize")
     User givePrivilegeToUser(@RequestParam String email){
         return userPrivilegedService.givePrivilegeToUser(email);

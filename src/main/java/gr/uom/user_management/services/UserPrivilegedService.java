@@ -17,15 +17,6 @@ public class UserPrivilegedService {
     UserRepository userRepository;
 
     @Transactional
-    public User verifyUser(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "User with email "+ email +" doesn't exist!"
-        ));
-        user.setVerified(true);
-        return user;
-    }
-
-    @Transactional
     public User givePrivilegeToUser(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "User with email "+ email +" doesn't exist!"

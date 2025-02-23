@@ -2,6 +2,7 @@ package gr.uom.user_management.controllers;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gr.uom.user_management.models.Skill;
 import gr.uom.user_management.models.User;
 import gr.uom.user_management.repositories.UserRepository;
 import gr.uom.user_management.services.UserService;
@@ -35,9 +36,23 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    @GetMapping("/unverified")
-    List<User> getUnverifiedUsers(){
-        return userService.getUnverifiedUsers();
+    @PutMapping("/{id}")
+    User updateUser(HttpServletRequest request, @PathVariable String id, @RequestParam(required = false) String streetAddress,
+                    @RequestParam(required = false) String portfolio, @RequestParam(required = false) String targetOccupation) {
+        DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
+        return userService.updateUser(decodedJWT.getClaim("id").asString(), id, streetAddress, portfolio, targetOccupation);
+    }
+
+    @PutMapping("/{id}/skills")
+    User updateUserSkills(HttpServletRequest request, @PathVariable String id, @RequestBody Skill skill) {
+        DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
+        return userService.updateUserSkills(decodedJWT.getClaim("id").asString(), id, skill);
+    }
+
+    @GetMapping("/{id}/skills")
+    List<Skill> getUserSkills(HttpServletRequest request, @PathVariable String id){
+        DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
+        return userService.getUserSkills(decodedJWT.getClaim("id").asString(), id);
     }
 
     @GetMapping("/all")

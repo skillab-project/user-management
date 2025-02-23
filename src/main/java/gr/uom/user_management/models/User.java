@@ -16,7 +16,6 @@ public class User {
     private String email;
     private String password;
     private String roles;
-    private Boolean verified;
     private String streetAddress;
     private String portfolio;
     @OneToMany(
@@ -81,13 +80,6 @@ public class User {
         this.roles = roles;
     }
 
-    public Boolean getVerified() {
-        return verified;
-    }
-
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
-    }
 
     public String getStreetAddress() {
         return streetAddress;

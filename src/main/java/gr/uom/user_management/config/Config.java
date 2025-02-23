@@ -17,12 +17,11 @@ public class Config {
                                         UserPrivilegedService userPrivilegedService){
         return args -> {
             //Create admin user
-            Optional<User> userOptional = userRepository.findByEmail("admin@gr");
+            Optional<User> userOptional = userRepository.findByEmail("admin@skillab.eu");
             if(!userOptional.isPresent()){
-                User admin = new User("Admin","admin@gr","admin");
+                User admin = new User("Admin","admin@skillab.eu","adminskillab");
                 userService.createUser(admin);
-                userPrivilegedService.verifyUser("admin@gr");
-                userPrivilegedService.givePrivilegeToUser("admin@gr");
+                userPrivilegedService.givePrivilegeToUser("admin@skillab.eu");
             }
 
         };

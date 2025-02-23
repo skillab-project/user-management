@@ -1,5 +1,7 @@
 package gr.uom.user_management.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,7 +16,11 @@ public class Skill {
     private String skillLabel;
     private Integer years;
     @ManyToOne
+    @JsonIgnore
     private User user;
+
+    public Skill() {
+    }
 
     public Skill(String skillId, String skillLabel, Integer years, User user) {
         this.skillId = skillId;
