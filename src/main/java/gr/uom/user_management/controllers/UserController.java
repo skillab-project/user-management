@@ -36,6 +36,11 @@ public class UserController {
         return userService.createUser(user);
     }
 
+    @GetMapping("/{id}")
+    User getUser(@PathVariable String id){
+        return userService.getUser(id);
+    }
+
     @PutMapping("/{id}")
     User updateUser(HttpServletRequest request, @PathVariable String id, @RequestParam(required = false) String streetAddress,
                     @RequestParam(required = false) String portfolio, @RequestParam(required = false) String targetOccupation) {

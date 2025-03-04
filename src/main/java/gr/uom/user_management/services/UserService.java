@@ -95,4 +95,11 @@ public class UserService {
 
         return user.getSkillList();
     }
+
+    public User getUser(String id) {
+        return userRepository.findById(UUID.fromString(id))
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User with email " + id + " doesn't exist!"
+            ));
+    }
 }

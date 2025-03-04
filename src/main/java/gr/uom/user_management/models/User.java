@@ -25,6 +25,7 @@ public class User {
     private List<Skill> skillList;
     private String targetOccupation;
     @OneToOne(mappedBy = "user")
+    @JsonIgnore
     private SystemConfiguration configurations;
 
     public User() {
