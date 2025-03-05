@@ -12,6 +12,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://user-management-db:5432/test_db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL-AUTO=create-drop
     ports:
       - '8081:8080'
     restart: unless-stopped

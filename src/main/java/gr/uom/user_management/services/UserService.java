@@ -114,6 +114,12 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
+        //Delete old
+        if(user.getTargetOccupation()!=null){
+            occupationRepository.delete(user.getTargetOccupation());
+        }
+
+        //Save new
         occupation.setUser(user);
         occupationRepository.save(occupation);
         user.setTargetOccupation(occupation);
