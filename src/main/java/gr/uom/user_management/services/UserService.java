@@ -1,8 +1,9 @@
 package gr.uom.user_management.services;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
+import gr.uom.user_management.models.Occupation;
 import gr.uom.user_management.models.Skill;
 import gr.uom.user_management.models.User;
+import gr.uom.user_management.repositories.OccupationRepository;
 import gr.uom.user_management.repositories.SkillRepository;
 import gr.uom.user_management.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class UserService {
     SkillRepository skillRepository;
 
     @Autowired
+    OccupationRepository occupationRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
@@ -45,7 +49,7 @@ public class UserService {
 
 
     @Transactional
-    public User updateUser(String auth_id, String id, String streetAddress, String portfolio, String targetOccupation) {
+    public User updateUser(String auth_id, String id, String streetAddress, String portfolio) {
         System.out.println(UUID.fromString(id));
         User user = userRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new ResponseStatusException(
@@ -59,9 +63,6 @@ public class UserService {
         }
         if(portfolio!=null && !portfolio.isEmpty()){
             user.setPortfolio(portfolio);
-        }
-        if(targetOccupation!=null && !targetOccupation.isEmpty()){
-            user.setTargetOccupation(targetOccupation);
         }
 
         return user;
@@ -101,5 +102,22 @@ public class UserService {
             .orElseThrow(() -> new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "User with email " + id + " doesn't exist!"
             ));
+    }
+
+    @Transactional
+    public User updateUserOccupation(String auth_id, String id, Occupation occupation) {
+        User user = userRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User with email " + id + " doesn't exist!"
+                ));
+        if(!user.getId().equals(UUID.fromString(auth_id))){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        occupation.setUser(user);
+        occupationRepository.save(occupation);
+        user.setTargetOccupation(occupation);
+
+        return user;
     }
 }

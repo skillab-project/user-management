@@ -23,7 +23,8 @@ public class User {
             cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Skill> skillList;
-    private String targetOccupation;
+    @OneToOne(mappedBy = "user")
+    private Occupation targetOccupation;
     @OneToOne(mappedBy = "user")
     @JsonIgnore
     private SystemConfiguration configurations;
@@ -106,11 +107,11 @@ public class User {
         this.skillList = skillList;
     }
 
-    public String getTargetOccupation() {
+    public Occupation getTargetOccupation() {
         return targetOccupation;
     }
 
-    public void setTargetOccupation(String targetOccupation) {
+    public void setTargetOccupation(Occupation targetOccupation) {
         this.targetOccupation = targetOccupation;
     }
 }

@@ -2,6 +2,7 @@ package gr.uom.user_management.controllers;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gr.uom.user_management.models.Occupation;
 import gr.uom.user_management.models.Skill;
 import gr.uom.user_management.models.User;
 import gr.uom.user_management.repositories.UserRepository;
@@ -43,15 +44,21 @@ public class UserController {
 
     @PutMapping("/{id}")
     User updateUser(HttpServletRequest request, @PathVariable String id, @RequestParam(required = false) String streetAddress,
-                    @RequestParam(required = false) String portfolio, @RequestParam(required = false) String targetOccupation) {
+                    @RequestParam(required = false) String portfolio) {
         DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
-        return userService.updateUser(decodedJWT.getClaim("id").asString(), id, streetAddress, portfolio, targetOccupation);
+        return userService.updateUser(decodedJWT.getClaim("id").asString(), id, streetAddress, portfolio);
     }
 
     @PutMapping("/{id}/skills")
     User updateUserSkills(HttpServletRequest request, @PathVariable String id, @RequestBody Skill skill) {
         DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
         return userService.updateUserSkills(decodedJWT.getClaim("id").asString(), id, skill);
+    }
+
+    @PutMapping("/{id}/occupation")
+    User updateUserOccupation(HttpServletRequest request, @PathVariable String id, @RequestBody Occupation occupation) {
+        DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
+        return userService.updateUserOccupation(decodedJWT.getClaim("id").asString(), id, occupation);
     }
 
     @GetMapping("/{id}/skills")
