@@ -36,3 +36,5 @@ services:
 
 volumes:
   user_management_postgresql_data:
+    labels:
+      io.portainer.accesscontrol.teams: skillab-all
