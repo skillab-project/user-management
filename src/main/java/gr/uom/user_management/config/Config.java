@@ -7,10 +7,12 @@ import gr.uom.user_management.services.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Optional;
 
 @Configuration
+@Profile("!test")
 public class Config {
     @Bean
     CommandLineRunner commandLineRunner(UserRepository userRepository, UserService userService,
