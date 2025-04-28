@@ -21,7 +21,7 @@ pipeline {
             steps {
                 echo "***** Running Unit Tests *****"
                 sh 'chmod +x mvnw'
-                sh './mvn test'
+                sh './mvnw test'
             }
         }
 
