@@ -20,7 +20,7 @@ pipeline {
         stage("Testing"){
             steps {
                 echo "***** Running Unit Tests *****"
-                sh './mvnw test'
+                sh 'mvn test'
             }
         }
 
