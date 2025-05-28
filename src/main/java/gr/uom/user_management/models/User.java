@@ -3,6 +3,7 @@ package gr.uom.user_management.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,8 @@ public class User {
     @Id
     @GeneratedValue
     private UUID id;
+    private String passResetCode;
+    private Date passResetIssuedDate;
     private String name;
     private String email;
     private String password;
@@ -48,6 +51,19 @@ public class User {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getPassResetCode() {
+        return passResetCode;
+    }
+
+    public void setPassResetCode(String passResetCode) {
+        this.passResetCode = passResetCode;
+        this.passResetIssuedDate = new Date();
+    }
+
+    public Date getPassResetIssuedDate() {
+        return passResetIssuedDate;
     }
 
     public String getName() {

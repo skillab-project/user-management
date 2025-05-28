@@ -2,6 +2,7 @@ package gr.uom.user_management.controllers;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gr.uom.user_management.controllers.dto.ResetPasswordRequest;
 import gr.uom.user_management.models.Occupation;
 import gr.uom.user_management.models.Skill;
 import gr.uom.user_management.models.User;
@@ -10,6 +11,7 @@ import gr.uom.user_management.services.UserService;
 import gr.uom.user_management.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -111,5 +113,17 @@ public class UserController {
         else {
             throw new RuntimeException("Refresh token is missing");
         }
+    }
+
+    @PostMapping("/reset-password/request")
+    public ResponseEntity<?> resetPassword(@RequestParam String userEmail){
+        userService.resetPasswordRequest(userEmail);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+        userService.resetPassword(resetPasswordRequest);
+        return ResponseEntity.ok().build();
     }
 }

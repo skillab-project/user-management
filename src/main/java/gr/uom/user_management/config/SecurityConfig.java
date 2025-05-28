@@ -38,6 +38,8 @@ public class SecurityConfig {
                 .authorizeRequests(auth -> auth
                         .mvcMatchers("/api","/api-ui","/swagger-ui/**","/api/swagger-config/**","/user/token/refresh/**").permitAll()
                         .mvcMatchers(HttpMethod.POST,"/user").permitAll()
+                        .mvcMatchers(HttpMethod.POST,"/user/reset-password/request").permitAll()
+                        .mvcMatchers(HttpMethod.PUT,"/user/reset-password").permitAll()
                         .mvcMatchers(HttpMethod.POST,"/admin/**").hasAnyAuthority("PRIVILEGED")
                         .mvcMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority("PRIVILEGED")
                         .anyRequest().authenticated())

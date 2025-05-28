@@ -1,5 +1,6 @@
 package gr.uom.user_management.services;
 
+import gr.uom.user_management.controllers.dto.ResetPasswordRequest;
 import gr.uom.user_management.models.Occupation;
 import gr.uom.user_management.models.Skill;
 import gr.uom.user_management.models.User;
@@ -7,18 +8,22 @@ import gr.uom.user_management.repositories.OccupationRepository;
 import gr.uom.user_management.repositories.SkillRepository;
 import gr.uom.user_management.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriUtils;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.security.SecureRandom;
 
 @Service
 public class UserService {
+
+    @Value("${frontend.url}")
+    private String frontEndURL;
 
     @Autowired
     UserRepository userRepository;
@@ -31,6 +36,11 @@ public class UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    MailSendingService mailSendingService;
+
+    SecureRandom secureRandom = new SecureRandom();
 
     public User createUser(User user) {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
@@ -125,5 +135,56 @@ public class UserService {
         user.setTargetOccupation(occupation);
 
         return user;
+    }
+
+    @Transactional
+    public void resetPasswordRequest(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User with email " + userEmail + " doesn't exist!"
+                ));
+
+        String passwordResetCode = generateCode(100);
+        user.setPassResetCode(passwordResetCode);
+
+        mailSendingService.sendPasswordResetEmail(
+                user.getEmail(),
+                user.getPassResetCode(),
+                user.getId(),
+                frontEndURL
+        );
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        String resetToken = resetPasswordRequest.getToken();
+        String newPassword = resetPasswordRequest.getPassword();
+        UUID id = resetPasswordRequest.getUuid();
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User with id " + id + " doesn't exist!"
+                ));
+
+        if(new Date(System.currentTimeMillis() - 300000).after(user.getPassResetIssuedDate())) { //5 minutes
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Password Reset has expired. Please try again.");
+        }
+        if(!resetToken.equals(user.getPassResetCode())){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Invalid password reset token.");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassResetCode(null);
+    }
+
+
+    private String generateCode(int length) {
+        byte[] buffer = new byte[length];
+        secureRandom.nextBytes(buffer);
+
+        String encodedBuffer = Base64.getEncoder().encodeToString(buffer);
+        String code = encodedBuffer.substring(0, length);
+
+        return UriUtils.encode(code, "UTF-8");
     }
 }
