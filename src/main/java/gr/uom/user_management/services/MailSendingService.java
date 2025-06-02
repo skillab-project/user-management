@@ -50,7 +50,7 @@ public class MailSendingService {
     }
 
     public void sendPasswordResetEmail(String toEmail, String passResetCode, UUID uuid, String frontendUrl) {
-        String subject = "UoM Dashboard | Password Reset Request";
+        String subject = "Skillab | Password Reset Request";
         String resetUrl = frontendUrl + "/reset-password?token=" + passResetCode + "&uuid=" + uuid;
 
         // Load HTML template from file
