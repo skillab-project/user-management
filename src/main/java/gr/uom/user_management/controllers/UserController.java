@@ -69,8 +69,8 @@ public class UserController {
         return userService.getUserSkills(decodedJWT.getClaim("id").asString(), id);
     }
 
-    @DeleteMapping("/{id}/skills/{skillId}")
-    List<Skill> deleteUserSkill(HttpServletRequest request, @PathVariable String id, @PathVariable String skillId){
+    @DeleteMapping("/{id}/skills")
+    List<Skill> deleteUserSkill(HttpServletRequest request, @PathVariable String id, @RequestParam String skillId){
         DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
         return userService.deleteUserSkill(decodedJWT.getClaim("id").asString(), id, skillId);
     }
