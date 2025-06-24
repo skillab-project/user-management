@@ -95,7 +95,7 @@ public class UserServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        User updatedUser = userService.updateUser(authId, userId.toString(), "New Address", "New Portfolio");
+        User updatedUser = userService.updateUser(authId, userId.toString(), "Greece" ,"New Address", "New Portfolio");
 
         assertEquals("New Address", updatedUser.getStreetAddress());
         assertEquals("New Portfolio", updatedUser.getPortfolio());
@@ -109,7 +109,7 @@ public class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            userService.updateUser(authId, userId.toString(), "New Address", "New Portfolio");
+            userService.updateUser(authId, userId.toString(),"Greece", "New Address", "New Portfolio");
         });
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
@@ -125,7 +125,7 @@ public class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            userService.updateUser(authId, userId.toString(), "New Address", "New Portfolio");
+            userService.updateUser(authId, userId.toString(), "Greece", "New Address", "New Portfolio");
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatus());

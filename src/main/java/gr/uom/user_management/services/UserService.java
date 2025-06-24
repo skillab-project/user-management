@@ -59,7 +59,7 @@ public class UserService {
 
 
     @Transactional
-    public User updateUser(String auth_id, String id, String streetAddress, String portfolio) {
+    public User updateUser(String auth_id, String id, String country, String streetAddress, String portfolio) {
         System.out.println(UUID.fromString(id));
         User user = userRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new ResponseStatusException(
@@ -67,6 +67,10 @@ public class UserService {
                 ));
         if(!user.getId().toString().equals(auth_id)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        if(country!=null && !country.isEmpty()){
+            user.setCountry(country);
         }
         if(streetAddress!=null && !streetAddress.isEmpty()){
             user.setStreetAddress(streetAddress);
@@ -103,6 +107,28 @@ public class UserService {
         if(!user.getId().equals(UUID.fromString(auth_id))){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+
+        return user.getSkillList();
+    }
+
+    @Transactional
+    public List<Skill> deleteUserSkill(String auth_id, String id, String skillId) {
+        User user = userRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User with email " + id + " doesn't exist!"
+                ));
+        if(!user.getId().equals(UUID.fromString(auth_id))){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        Skill skillToRemove = user.getSkillList().stream()
+                .filter(skill -> skill.getSkillId().equals(skillId))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Skill with id " + skillId + " doesn't exist for this user!"
+                ));
+        user.getSkillList().remove(skillToRemove);
+        skillRepository.delete(skillToRemove);
 
         return user.getSkillList();
     }
