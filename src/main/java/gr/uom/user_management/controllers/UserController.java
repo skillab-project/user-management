@@ -57,6 +57,12 @@ public class UserController {
         return userService.updateUserSkills(decodedJWT.getClaim("id").asString(), id, skill);
     }
 
+    @PutMapping("/{id}/skills/skill")
+    List<Skill> updateUserSkillYears(HttpServletRequest request, @PathVariable String id, @RequestParam String skillId, @RequestParam Integer years) {
+        DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
+        return userService.updateUserSkillYears(decodedJWT.getClaim("id").asString(), id, skillId, years);
+    }
+
     @PutMapping("/{id}/occupation")
     User updateUserOccupation(HttpServletRequest request, @PathVariable String id, @RequestBody Occupation occupation) {
         DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));

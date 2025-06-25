@@ -99,6 +99,27 @@ public class UserService {
         return user;
     }
 
+    @Transactional
+    public List<Skill> updateUserSkillYears(String auth_id, String id, String skillId, Integer newYears) {
+        User user = userRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User with email " + id + " doesn't exist!"
+                ));
+        if(!user.getId().equals(UUID.fromString(auth_id))){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        Skill skillToUpdate = user.getSkillList().stream()
+                .filter(skill -> skill.getSkillId().equals(skillId))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Skill with id " + skillId + " doesn't exist for this user!"
+                ));
+        skillToUpdate.setYears(newYears);
+
+        return user.getSkillList();
+    }
+
     public List<Skill> getUserSkills(String auth_id, String id) {
         User user = userRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new ResponseStatusException(
