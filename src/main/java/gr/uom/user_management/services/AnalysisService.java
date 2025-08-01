@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AnalysisService {
@@ -124,5 +125,19 @@ public class AnalysisService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    public List<Analysis> getAllAnalyses() {
+        return analysisRepository.findAll();
+    }
+
+
+    public void deleteAnalysis(String analysisId) {
+        Analysis analysis = analysisRepository.findById(UUID.fromString(analysisId))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Analysis with id " + analysisId + " doesn't exist!"
+                ));
+        analysisRepository.delete(analysis);
     }
 }
