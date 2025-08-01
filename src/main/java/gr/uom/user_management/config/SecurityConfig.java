@@ -36,7 +36,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth -> auth
-                        .mvcMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .mvcMatchers("/api","/api-ui","/swagger-ui/**","/api/swagger-config/**","/user/token/refresh/**").permitAll()
                         .mvcMatchers(HttpMethod.POST,"/user").permitAll()
                         .mvcMatchers(HttpMethod.POST,"/user/reset-password/request").permitAll()
