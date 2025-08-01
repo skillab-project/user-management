@@ -19,6 +19,8 @@ services:
     ports:
       - '8081:8080'
     restart: unless-stopped
+    networks:
+      - shared-net
     labels:
       io.portainer.accesscontrol.teams: skillab-all
 
@@ -41,3 +43,7 @@ volumes:
   user_management_postgresql_data:
     labels:
       io.portainer.accesscontrol.teams: skillab-all
+
+networks:
+  shared-net:
+    external: true
