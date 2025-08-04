@@ -49,7 +49,7 @@ public class AnalysisAsyncService {
             }
 
             if (analysis.getFilterSources() != null && !analysis.getFilterSources().isEmpty()) {
-                bodyParams.add("source=" + analysis.getFilterSources());
+                bodyParams.add("sources=" + analysis.getFilterSources());
             }
 
             if (analysis.getFilterMinDate() != null && !analysis.getFilterMinDate().isEmpty()) {
