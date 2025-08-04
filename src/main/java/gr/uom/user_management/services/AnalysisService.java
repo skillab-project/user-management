@@ -26,14 +26,14 @@ public class AnalysisService {
     @Autowired
     AnalysisAsyncService analysisAsyncService;
 
-    public String checkIfSameAnalysisExists(String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources) {
+    public Analysis checkIfSameAnalysisExists(String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources) {
         Optional<Analysis> existing = analysisRepository
                 .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSources(
                         sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources
                 );
 
         if(existing.isPresent())
-            return existing.get().getUserId();
+            return existing.get();
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Analysis with these filters doesn't exist!");
     }

@@ -16,7 +16,7 @@ public class AnalysisController {
     AnalysisService analysisService;
 
     @GetMapping("/check")
-    String checkIfSameAnalysisExists(@RequestParam String sessionId,
+    Analysis checkIfSameAnalysisExists(@RequestParam String sessionId,
                                      @RequestParam(required = false) String filterOccupation,
                                      @RequestParam(required = false) String filterMinDate,
                                      @RequestParam(required = false) String filterMaxDate,
