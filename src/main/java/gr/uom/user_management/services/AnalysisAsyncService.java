@@ -186,4 +186,24 @@ public class AnalysisAsyncService {
             e.printStackTrace();
         }
     }
+
+
+    @Async
+    public void runNewClusteringAnalysisInBackground(Analysis analysis, int noClustering) {
+        URI uri = URI.create("http://labor-market-demand:8872/skillcluster?type_now=kmeans&user_id=" +analysis.getUserId()+
+                "&session_id=" +analysis.getCompleteSessionId()+ "&storage_name=skillcluster-" +noClustering+ "&weight_now=ii_weight" +
+                "&no_clust_now=" +noClustering+ "&threshold=0.1&umap_nn=5&umap_dim=2&vectors_type=weighting");
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                requestEntity,
+                String.class
+        );
+        int statusCode = response.getStatusCodeValue();
+        String responseBody = response.getBody();
+        System.out.println("Labor market demand, clustering, responded with code: " + statusCode);
+        System.out.println("Response body: " + responseBody);
+    }
 }

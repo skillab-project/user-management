@@ -35,6 +35,22 @@ public class AnalysisController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("new/{noClustering}")
+    ResponseEntity<?> startNewAnalysisClustering(@RequestParam String sessionId,
+                                                 @PathVariable String noClustering,
+                                                 @RequestParam(required = false) String filterOccupation,
+                                                 @RequestParam(required = false) String filterMinDate,
+                                                 @RequestParam(required = false) String filterMaxDate,
+                                                 @RequestParam(required = false) String filterSources){
+        try {
+            int clusteringNumber = Integer.parseInt(noClustering);
+            analysisService.startNewAnalysisClustering(sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, clusteringNumber);
+            return ResponseEntity.ok().build();
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid clustering number: must be an integer");
+        }
+    }
+
     @GetMapping()
     List<Analysis> getAllAnalyses(){
         return analysisService.getAllAnalyses();
