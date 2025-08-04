@@ -12,6 +12,7 @@ public class Analysis {
     private UUID id;
     private String userId;
     private Boolean finished;
+    private String completeSessionId;
     private String sessionId;
     private String filterOccupation;
     private String filterMinDate;
@@ -23,6 +24,9 @@ public class Analysis {
 
     public Analysis(String userId, String sessionId, Boolean finished, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources) {
         this.userId = userId;
+        this.completeSessionId = sessionId +"-occupation-"+ filterOccupation.replaceAll("[^a-zA-Z0-9.-]", "_")
+                +"-minDate-"+ filterMinDate +"-maxDate-"+ filterMaxDate +"-sources-"+ filterSources;
+        System.out.println("completeSessionId: " + completeSessionId);
         this.sessionId = sessionId;
         this.finished = finished;
         this.filterOccupation = filterOccupation;
@@ -31,9 +35,10 @@ public class Analysis {
         this.filterSources = filterSources;
     }
 
-    public Analysis(UUID id, String userId, String sessionId, Boolean finished, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources) {
+    public Analysis(UUID id, String userId, String completeSessionId, String sessionId, Boolean finished, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources) {
         this.id = id;
         this.userId = userId;
+        this.completeSessionId = completeSessionId;
         this.sessionId = sessionId;
         this.finished = finished;
         this.filterOccupation = filterOccupation;
@@ -56,6 +61,14 @@ public class Analysis {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getCompleteSessionId() {
+        return completeSessionId;
+    }
+
+    public void setCompleteSessionId(String completeSessionId) {
+        this.completeSessionId = completeSessionId;
     }
 
     public String getSessionId() {
