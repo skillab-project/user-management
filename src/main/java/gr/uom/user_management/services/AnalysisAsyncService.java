@@ -141,7 +141,7 @@ public class AnalysisAsyncService {
 
 
             // Make trend analysis
-            if(!analysis.getSessionId().equals("courses")) {
+            if(analysis.getSessionId().equals("jobs")) {
                 uri = URI.create("http://labor-market-demand:8872/trend_analysis?user_id=" + analysis.getUserId() +
                         "&session_id=" + analysis.getCompleteSessionId() + "&storage_name=trending&date_field=upload_date"+
                         "&features_query=location&date_format=%25Y-%25m-%25d&what=month");
