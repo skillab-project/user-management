@@ -24,8 +24,13 @@ public class Analysis {
 
     public Analysis(String userId, String sessionId, Boolean finished, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources) {
         this.userId = userId;
-        this.completeSessionId = sessionId +"-occupation-"+ filterOccupation.replaceAll("[^a-zA-Z0-9.-]", "_")
-                +"-minDate-"+ filterMinDate +"-maxDate-"+ filterMaxDate +"-sources-"+ filterSources;
+        if(sessionId.equals("profiles") || sessionId.equals("courses")){
+            this.completeSessionId = sessionId + "-sources-" + filterSources;
+        }
+        else {
+            this.completeSessionId = sessionId + "-occupation-" + filterOccupation.replaceAll("[^a-zA-Z0-9.-]", "_")
+                    + "-minDate-" + filterMinDate + "-maxDate-" + filterMaxDate + "-sources-" + filterSources;
+        }
         System.out.println("completeSessionId: " + completeSessionId);
         this.sessionId = sessionId;
         this.finished = finished;
