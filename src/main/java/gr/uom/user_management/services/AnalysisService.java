@@ -19,10 +19,10 @@ public class AnalysisService {
     @Autowired
     AnalysisAsyncService analysisAsyncService;
 
-    public Analysis checkIfSameAnalysisExists(String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources) {
+    public Analysis checkIfSameAnalysisExists(String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, Integer limitData) {
         Optional<Analysis> existing = analysisRepository
-                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSources(
-                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources
+                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSourcesAndLimitData(
+                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData
                 );
 
         if(existing.isPresent())
@@ -32,18 +32,18 @@ public class AnalysisService {
     }
 
 
-    public void startNewAnalysis(String userId, String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources) {
+    public void startNewAnalysis(String userId, String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, Integer limitData) {
         // check if it already exists
         Optional<Analysis> existing = analysisRepository
-                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSources(
-                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources
+                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSourcesAndLimitData(
+                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData
                 );
         if(existing.isPresent()){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Analysis with these filters already exist!");
         }
 
         // create entry in db
-        Analysis newAnalysis = new Analysis(userId, sessionId, false, filterOccupation, filterMinDate, filterMaxDate, filterSources);
+        Analysis newAnalysis = new Analysis(userId, sessionId, false, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData);
         analysisRepository.save(newAnalysis);
 
         // Start analysis in background
@@ -65,11 +65,11 @@ public class AnalysisService {
         analysisRepository.delete(analysis);
     }
 
-    public void startNewAnalysisClustering(String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, int clusteringNumber) {
+    public void startNewAnalysisClustering(String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, int clusteringNumber, Integer limitData) {
         // check if it already exists
         Optional<Analysis> existing = analysisRepository
-                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSources(
-                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources
+                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSourcesAndLimitData(
+                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData
                 );
         if(!existing.isPresent()){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Analysis with these filters doesn't exist!");

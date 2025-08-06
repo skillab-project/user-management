@@ -1,6 +1,7 @@
 package gr.uom.user_management.services;
 
 import gr.uom.user_management.models.Analysis;
+import gr.uom.user_management.models.ClusteringAnalysis;
 import gr.uom.user_management.repositories.AnalysisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,7 +66,10 @@ public class AnalysisAsyncService {
                 String encodedBody = URLEncoder.encode(rawBody, StandardCharsets.UTF_8);
                 url.append("&body=").append(encodedBody);
             }
-            url.append("&limit_data_no=10000");
+
+            if (analysis.getLimitData() != null && analysis.getLimitData() != 0) {
+                url.append("&limit_data_no=").append(analysis.getLimitData());
+            }
 
             System.out.println("Calling labor-market-demand with URL: " + url);
 
@@ -101,6 +105,7 @@ public class AnalysisAsyncService {
             responseBody = response.getBody();
             System.out.println("Labor market demand, first descriptive, responded with code: " + statusCode);
             System.out.println("Response body: " + responseBody);
+            analysis.setFirstDescriptiveAnalysis(responseBody);
 
 
             // Make second descriptive analysis
@@ -119,6 +124,7 @@ public class AnalysisAsyncService {
                 responseBody = response.getBody();
                 System.out.println("Labor market demand, second descriptive, responded with code: " + statusCode);
                 System.out.println("Response body: " + responseBody);
+                analysis.setSecondDescriptiveAnalysis(responseBody);
             }
 
 
@@ -138,6 +144,7 @@ public class AnalysisAsyncService {
                 responseBody = response.getBody();
                 System.out.println("Labor market demand, exploratory, responded with code: " + statusCode);
                 System.out.println("Response body: " + responseBody);
+                analysis.setExploratoryAnalysis(responseBody);
             }
 
 
@@ -158,6 +165,7 @@ public class AnalysisAsyncService {
                 responseBody = response.getBody();
                 System.out.println("Labor market demand, trending, responded with code: " + statusCode);
                 System.out.println("Response body: " + responseBody);
+                analysis.setTrendAnalysis(responseBody);
             }
 
 
@@ -178,6 +186,12 @@ public class AnalysisAsyncService {
             responseBody = response.getBody();
             System.out.println("Labor market demand, clustering, responded with code: " + statusCode);
             System.out.println("Response body: " + responseBody);
+            ClusteringAnalysis result = new ClusteringAnalysis();
+            result.setNumberOfClusters(Integer.parseInt(noClustering));
+            result.setClusteringResult(responseBody);
+            result.setAnalysis(analysis);
+            analysis.getClusteringAnalysis().add(result);
+            analysisRepository.save(analysis);
 
 
             // Mark analysis as finished
@@ -206,5 +220,12 @@ public class AnalysisAsyncService {
         String responseBody = response.getBody();
         System.out.println("Labor market demand, clustering, responded with code: " + statusCode);
         System.out.println("Response body: " + responseBody);
+
+        ClusteringAnalysis result = new ClusteringAnalysis();
+        result.setNumberOfClusters(noClustering);
+        result.setClusteringResult(responseBody);
+        result.setAnalysis(analysis);
+        analysis.getClusteringAnalysis().add(result);
+        analysisRepository.save(analysis);
     }
 }

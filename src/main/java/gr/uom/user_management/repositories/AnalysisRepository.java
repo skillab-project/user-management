@@ -9,11 +9,12 @@ import java.util.UUID;
 
 @Repository
 public interface AnalysisRepository extends JpaRepository<Analysis, UUID> {
-    Optional<Analysis> findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSources(
+    Optional<Analysis> findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSourcesAndLimitData(
             String sessionId,
             String filterOccupation,
             String filterMinDate,
             String filterMaxDate,
-            String filterSources
+            String filterSources,
+            Integer limitData
     );
 }
