@@ -65,7 +65,7 @@ public class AnalysisAsyncService {
                 String encodedBody = URLEncoder.encode(rawBody, StandardCharsets.UTF_8);
                 url.append("&body=").append(encodedBody);
             }
-            url.append("&limit_data_no=2000");
+            url.append("&limit_data_no=10000");
 
             System.out.println("Calling labor-market-demand with URL: " + url);
 
