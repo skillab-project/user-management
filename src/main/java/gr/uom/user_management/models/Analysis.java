@@ -1,10 +1,6 @@
 package gr.uom.user_management.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,29 +17,6 @@ public class Analysis {
     private String filterMaxDate;
     private String filterSources;
     private Integer limitData;
-    @Lob
-    @Basic(fetch = FetchType.EAGER)
-    @Column(columnDefinition = "TEXT")
-    @JsonIgnore
-    private String firstDescriptiveAnalysis;
-    @Lob
-    @Basic(fetch = FetchType.EAGER)
-    @Column(columnDefinition = "TEXT")
-    @JsonIgnore
-    private String secondDescriptiveAnalysis;
-    @Lob
-    @Basic(fetch = FetchType.EAGER)
-    @Column(columnDefinition = "TEXT")
-    @JsonIgnore
-    private String exploratoryAnalysis;
-    @Lob
-    @Basic(fetch = FetchType.EAGER)
-    @Column(columnDefinition = "TEXT")
-    @JsonIgnore
-    private String trendAnalysis;
-    @OneToMany(mappedBy = "analysis", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<ClusteringAnalysis> clusteringAnalysis = new ArrayList<>();
 
 
     public Analysis() {
@@ -159,45 +132,5 @@ public class Analysis {
 
     public void setLimitData(Integer limitData) {
         this.limitData = limitData;
-    }
-
-    public String getFirstDescriptiveAnalysis() {
-        return firstDescriptiveAnalysis;
-    }
-
-    public void setFirstDescriptiveAnalysis(String firstDescriptiveAnalysis) {
-        this.firstDescriptiveAnalysis = firstDescriptiveAnalysis;
-    }
-
-    public String getSecondDescriptiveAnalysis() {
-        return secondDescriptiveAnalysis;
-    }
-
-    public void setSecondDescriptiveAnalysis(String secondDescriptiveAnalysis) {
-        this.secondDescriptiveAnalysis = secondDescriptiveAnalysis;
-    }
-
-    public String getExploratoryAnalysis() {
-        return exploratoryAnalysis;
-    }
-
-    public void setExploratoryAnalysis(String exploratoryAnalysis) {
-        this.exploratoryAnalysis = exploratoryAnalysis;
-    }
-
-    public String getTrendAnalysis() {
-        return trendAnalysis;
-    }
-
-    public void setTrendAnalysis(String trendAnalysis) {
-        this.trendAnalysis = trendAnalysis;
-    }
-
-    public List<ClusteringAnalysis> getClusteringAnalysis() {
-        return clusteringAnalysis;
-    }
-
-    public void setClusteringAnalysis(List<ClusteringAnalysis> clusteringAnalysis) {
-        this.clusteringAnalysis = clusteringAnalysis;
     }
 }
