@@ -9,6 +9,7 @@ public class ClusteringAnalysis {
     private Long id;
     private int numberOfClusters;
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     @Column(columnDefinition = "TEXT")
     private String clusteringResult;
 

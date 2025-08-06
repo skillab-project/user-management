@@ -22,22 +22,27 @@ public class Analysis {
     private String filterSources;
     private Integer limitData;
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     @Column(columnDefinition = "TEXT")
     @JsonIgnore
     private String firstDescriptiveAnalysis;
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     @Column(columnDefinition = "TEXT")
     @JsonIgnore
     private String secondDescriptiveAnalysis;
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     @Column(columnDefinition = "TEXT")
     @JsonIgnore
     private String exploratoryAnalysis;
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     @Column(columnDefinition = "TEXT")
     @JsonIgnore
     private String trendAnalysis;
     @OneToMany(mappedBy = "analysis", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<ClusteringAnalysis> clusteringAnalysis = new ArrayList<>();
 
 
