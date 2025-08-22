@@ -5,6 +5,7 @@ import gr.uom.user_management.models.Skill;
 import gr.uom.user_management.models.User;
 import gr.uom.user_management.repositories.OccupationRepository;
 import gr.uom.user_management.repositories.SkillRepository;
+import gr.uom.user_management.repositories.SystemConfigurationRepository;
 import gr.uom.user_management.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ public class UserServiceTest {
     private UserRepository userRepository;
     private SkillRepository skillRepository;
     private OccupationRepository occupationRepository;
+    private SystemConfigurationRepository systemConfigurationRepository;
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
@@ -32,12 +34,14 @@ public class UserServiceTest {
         userRepository = mock(UserRepository.class);
         skillRepository = mock(SkillRepository.class);
         occupationRepository = mock(OccupationRepository.class);
+        systemConfigurationRepository = mock(SystemConfigurationRepository.class);
         passwordEncoder = mock(PasswordEncoder.class);
 
         userService = new UserService();
         userService.userRepository = userRepository;
         userService.skillRepository = skillRepository;
         userService.occupationRepository = occupationRepository;
+        userService.systemConfigurationRepository = systemConfigurationRepository;
         userService.passwordEncoder = passwordEncoder;
     }
 

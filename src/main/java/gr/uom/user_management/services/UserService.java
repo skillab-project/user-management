@@ -3,9 +3,11 @@ package gr.uom.user_management.services;
 import gr.uom.user_management.controllers.dto.ResetPasswordRequest;
 import gr.uom.user_management.models.Occupation;
 import gr.uom.user_management.models.Skill;
+import gr.uom.user_management.models.SystemConfiguration;
 import gr.uom.user_management.models.User;
 import gr.uom.user_management.repositories.OccupationRepository;
 import gr.uom.user_management.repositories.SkillRepository;
+import gr.uom.user_management.repositories.SystemConfigurationRepository;
 import gr.uom.user_management.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +37,9 @@ public class UserService {
     OccupationRepository occupationRepository;
 
     @Autowired
+    SystemConfigurationRepository systemConfigurationRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -47,6 +52,11 @@ public class UserService {
         if (!userOptional.isPresent()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles("SIMPLE");
+            SystemConfiguration systemConfiguration = new SystemConfiguration();
+            systemConfiguration.setUser(user);
+            user.setConfigurations(systemConfiguration);
+
+            systemConfigurationRepository.save(systemConfiguration);
             userRepository.save(user);
             return user;
         }

@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.uom.user_management.controllers.dto.ResetPasswordRequest;
 import gr.uom.user_management.models.Occupation;
 import gr.uom.user_management.models.Skill;
+import gr.uom.user_management.models.SystemConfiguration;
 import gr.uom.user_management.models.User;
 import gr.uom.user_management.repositories.UserRepository;
+import gr.uom.user_management.services.SystemConfigurationService;
 import gr.uom.user_management.services.UserService;
 import gr.uom.user_management.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    SystemConfigurationService systemConfigurationService;
 
     @Autowired
     UserRepository userRepository;
@@ -79,6 +84,27 @@ public class UserController {
     List<Skill> deleteUserSkill(HttpServletRequest request, @PathVariable String id, @RequestParam String skillId){
         DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
         return userService.deleteUserSkill(decodedJWT.getClaim("id").asString(), id, skillId);
+    }
+
+    @GetMapping("/{id}/configurations")
+    SystemConfiguration getUserSystemConfigurations(HttpServletRequest request, @PathVariable String id){
+        DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
+        return systemConfigurationService.getUserSystemConfigurations(decodedJWT.getClaim("id").asString(), id);
+    }
+
+    @PutMapping("/{id}/configurations")
+    SystemConfiguration updateUserSystemConfigurations(HttpServletRequest request, @PathVariable String id,
+                                                       @RequestParam(required = false) String filterDemandDataSources,
+                                                       @RequestParam(required = false) Integer filterDemandDataLimit,
+                                                       @RequestParam(required = false) String filterDemandOccupations,
+                                                       @RequestParam(required = false) String filterSupplyProfilesDataSources,
+                                                       @RequestParam(required = false) Integer filterSupplyProfilesDataLimit,
+                                                       @RequestParam(required = false) String filterSupplyCoursesDataSources,
+                                                       @RequestParam(required = false) Integer filterSupplyCoursesDataLimit){
+        DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
+        return systemConfigurationService.updateUserSystemConfigurations(decodedJWT.getClaim("id").asString(), id,
+                filterDemandDataSources, filterDemandDataLimit, filterDemandOccupations, filterSupplyProfilesDataSources,
+                filterSupplyProfilesDataLimit, filterSupplyCoursesDataSources, filterSupplyCoursesDataLimit);
     }
 
     @GetMapping("/all")

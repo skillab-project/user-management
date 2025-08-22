@@ -139,4 +139,16 @@ public class User {
     public void setTargetOccupation(Occupation targetOccupation) {
         this.targetOccupation = targetOccupation;
     }
+
+    public SystemConfiguration getConfigurations() {
+        return configurations;
+    }
+
+    public void setConfigurations(SystemConfiguration configurations) {
+        this.configurations = configurations;
+    }
+
+    public void setPassResetIssuedDate(Date passResetIssuedDate) {
+        this.passResetIssuedDate = passResetIssuedDate;
+    }
 }
