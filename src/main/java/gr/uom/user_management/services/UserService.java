@@ -56,8 +56,8 @@ public class UserService {
             systemConfiguration.setUser(user);
             user.setConfigurations(systemConfiguration);
 
-            systemConfigurationRepository.save(systemConfiguration);
             userRepository.save(user);
+            systemConfigurationRepository.save(systemConfiguration);
             return user;
         }
         throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Email is used from another user");
