@@ -53,11 +53,10 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles("SIMPLE");
             SystemConfiguration systemConfiguration = new SystemConfiguration();
-            systemConfiguration.setUser(user);
             user.setConfigurations(systemConfiguration);
+            systemConfiguration.setUser(user);
 
             userRepository.save(user);
-            systemConfigurationRepository.save(systemConfiguration);
             return user;
         }
         throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Email is used from another user");

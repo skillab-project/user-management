@@ -29,8 +29,8 @@ public class User {
     private List<Skill> skillList;
     @OneToOne(mappedBy = "user")
     private Occupation targetOccupation;
-    @OneToOne(mappedBy = "user")
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "configurations_id")
     private SystemConfiguration configurations;
 
     public User() {

@@ -26,7 +26,7 @@ public class SystemConfiguration {
     @CollectionTable(name = "lis_profile_sources", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "list")
     private List<String> listProfileSources = new ArrayList<>();
-    @OneToOne
+    @OneToOne(mappedBy = "configurations")
     @JsonIgnore
     private User user;
 
