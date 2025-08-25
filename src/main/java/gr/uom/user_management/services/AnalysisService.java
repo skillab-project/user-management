@@ -80,4 +80,39 @@ public class AnalysisService {
         analysisAsyncService.runNewClusteringAnalysisInBackground(existing.get(), clusteringNumber);
         System.out.println("Continue without waiting");
     }
+
+
+
+    public Analysis manuallyChangeAnalysis(String id, Boolean finished, String userId) {
+        Optional<Analysis> analysisOptional = analysisRepository.findById(UUID.fromString(id));
+        if(analysisOptional.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Analysis with this id doesn't exist!");
+        }
+
+        Analysis analysis = analysisOptional.get();
+        if (finished!=null) {
+            analysis.setFinished(finished);
+        }
+        if (userId!=null && !userId.trim().isEmpty()) {
+            analysis.setUserId(userId);
+        }
+
+        analysisRepository.save(analysis);
+        return analysis;
+    }
+
+    public void manuallyCreateNewAnalysis(String userId, String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, Integer limitData) {
+        // check if it already exists
+        Optional<Analysis> existing = analysisRepository
+                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSourcesAndLimitData(
+                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData
+                );
+        if(existing.isPresent()){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Analysis with these filters already exist!");
+        }
+
+        // create entry in db
+        Analysis newAnalysis = new Analysis(userId, sessionId, false, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData);
+        analysisRepository.save(newAnalysis);
+    }
 }

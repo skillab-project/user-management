@@ -68,4 +68,21 @@ public class AnalysisController {
         return ResponseEntity.ok().build();
     }
 
+
+    @PostMapping("manually/new")
+    ResponseEntity<?> manuallyCreateNewAnalysis(@RequestParam String userId,
+                                       @RequestParam String sessionId,
+                                       @RequestParam(required = false) String filterOccupation,
+                                       @RequestParam(required = false) String filterMinDate,
+                                       @RequestParam(required = false) String filterMaxDate,
+                                       @RequestParam(required = false) String filterSources,
+                                       @RequestParam(required = false) Integer limitData){
+        analysisService.manuallyCreateNewAnalysis(userId, sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("manually/new")
+    Analysis manuallyChangeAnalysis(@RequestParam String id, @RequestParam(required = false) Boolean finished, @RequestParam(required = false) String userId){
+        return analysisService.manuallyChangeAnalysis(id, finished, userId);
+    }
 }
