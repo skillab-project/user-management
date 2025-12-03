@@ -21,7 +21,7 @@ public class TokenUtil {
         return Algorithm.HMAC256("secret".getBytes());
     }
 
-    public static String generateAccessToken(String email, StringBuffer requestURL, String id, String name, List<String> collect) {
+    public static String generateAccessToken(String email, StringBuffer requestURL, String id, String name, List<String> collect, String installation) {
         return JWT.create()
                 .withSubject(email)
                 .withExpiresAt(new Date(System.currentTimeMillis() +7*60*60*1000))
@@ -29,6 +29,7 @@ public class TokenUtil {
                 .withClaim("id", id)
                 .withClaim("name", name)
                 .withClaim("roles", collect)
+                .withClaim("installation", installation)
                 .sign(TokenUtil.getAlgorithm());
     }
 
