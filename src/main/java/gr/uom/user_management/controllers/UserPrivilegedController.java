@@ -2,8 +2,11 @@ package gr.uom.user_management.controllers;
 
 import gr.uom.user_management.models.User;
 import gr.uom.user_management.services.UserPrivilegedService;
+import gr.uom.user_management.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -13,14 +16,27 @@ public class UserPrivilegedController {
     @Autowired
     UserPrivilegedService userPrivilegedService;
 
-    @PutMapping("/authorize")
+    @Autowired
+    UserService userService;
+
+    @PutMapping("/users/authorize")
     User givePrivilegeToUser(@RequestParam String email){
         return userPrivilegedService.givePrivilegeToUser(email);
     }
 
-    @DeleteMapping("delete/user")
+    @DeleteMapping("/users/delete")
     void deleteUser(@RequestParam String email) {
         userPrivilegedService.deleteUser(email);
+    }
+
+    @GetMapping("/users/all")
+    List<User> getAllUser(){
+        return userService.getAllUsers();
+    }
+
+    @PostMapping("/users/create")
+    User createUser(@RequestBody User user, @RequestParam String installation){
+        return userService.createUser(user, installation);
     }
 
 }

@@ -54,7 +54,7 @@ public class UserServiceTest {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
         when(passwordEncoder.encode("plainpassword")).thenReturn("encodedpassword");
 
-        User createdUser = userService.createUser(user);
+        User createdUser = userService.createUser(user, "citizen");
 
         assertEquals("SIMPLE", createdUser.getRoles());
         assertEquals("encodedpassword", createdUser.getPassword());
@@ -70,7 +70,7 @@ public class UserServiceTest {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(existingUser));
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            userService.createUser(existingUser);
+            userService.createUser(existingUser, "citizen");
         });
 
         assertEquals(HttpStatus.NOT_ACCEPTABLE, exception.getStatus());

@@ -22,6 +22,8 @@ public class User {
     private String country;
     private String streetAddress;
     private String portfolio;
+    //citizen, industry, education, policy(policy-education, policy-industry)
+    private String installation;
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL)
@@ -99,7 +101,6 @@ public class User {
         this.roles = roles;
     }
 
-
     public String getCountry() {
         return country;
     }
@@ -122,6 +123,14 @@ public class User {
 
     public void setPortfolio(String portfolio) {
         this.portfolio = portfolio;
+    }
+
+    public String getInstallation() {
+        return installation;
+    }
+
+    public void setInstallation(String installation) {
+        this.installation = installation;
     }
 
     public List<Skill> getSkillList() {

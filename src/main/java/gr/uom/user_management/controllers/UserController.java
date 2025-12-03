@@ -41,7 +41,7 @@ public class UserController {
 
     @PostMapping
     User createUser(@RequestBody User user){
-        return userService.createUser(user);
+        return userService.createUser(user, "citizen");
     }
 
     @GetMapping("/{id}")
@@ -105,11 +105,6 @@ public class UserController {
         return systemConfigurationService.updateUserSystemConfigurations(decodedJWT.getClaim("id").asString(), id,
                 filterDemandDataSources, filterDemandDataLimit, filterDemandOccupations, filterSupplyProfilesDataSources,
                 filterSupplyProfilesDataLimit, filterSupplyCoursesDataSources, filterSupplyCoursesDataLimit);
-    }
-
-    @GetMapping("/all")
-    List<User> getAllUser(){
-        return userService.getAllUsers();
     }
 
     @GetMapping("/token/refresh")

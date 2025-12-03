@@ -42,6 +42,8 @@ public class SecurityConfig {
                         .mvcMatchers(HttpMethod.PUT,"/user/reset-password").permitAll()
                         .mvcMatchers(HttpMethod.POST,"/admin/**").hasAnyAuthority("PRIVILEGED")
                         .mvcMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority("PRIVILEGED")
+                        .mvcMatchers(HttpMethod.PUT,"/admin/**").hasAnyAuthority("PRIVILEGED")
+                        .mvcMatchers(HttpMethod.DELETE,"/admin/**").hasAnyAuthority("PRIVILEGED")
                         .anyRequest().authenticated())
                 .userDetailsService(jpaUserDetailsService)
                 .addFilter(new CustomAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class))))
