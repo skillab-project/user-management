@@ -35,6 +35,7 @@ public class ProxyService {
 
         URI uri = new URI(targetBaseUrl + targetPath +
                 (request.getQueryString() != null ? "?" + request.getQueryString() : ""));
+        System.out.println("GATEWAY PROXYING TO: " + uri.toString());
 
         // Copy Incoming Headers
         HttpHeaders headers = new HttpHeaders();
@@ -42,7 +43,10 @@ public class ProxyService {
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             // Skip content-length to let RestTemplate calculate it
-            if (!headerName.equalsIgnoreCase("Content-Length")) {
+            if (!headerName.equalsIgnoreCase("Content-Length") &&
+                    !headerName.equalsIgnoreCase("Host") &&
+                    !headerName.equalsIgnoreCase("Transfer-Encoding") &&
+                    !headerName.equalsIgnoreCase("Connection")) {
                 headers.addAll(headerName, Collections.list(request.getHeaders(headerName)));
             }
         }
