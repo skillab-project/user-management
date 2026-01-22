@@ -44,6 +44,8 @@ public class SecurityConfig {
                         .mvcMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority("PRIVILEGED")
                         .mvcMatchers(HttpMethod.PUT,"/admin/**").hasAnyAuthority("PRIVILEGED")
                         .mvcMatchers(HttpMethod.DELETE,"/admin/**").hasAnyAuthority("PRIVILEGED")
+                        .mvcMatchers("/hiring-management/**").authenticated()
+                        .mvcMatchers("/policy/**").authenticated()
                         .anyRequest().authenticated())
                 .userDetailsService(jpaUserDetailsService)
                 .addFilter(new CustomAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class))))

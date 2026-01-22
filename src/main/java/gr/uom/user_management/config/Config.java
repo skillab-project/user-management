@@ -22,7 +22,7 @@ public class Config {
             Optional<User> userOptional = userRepository.findByEmail("admin@skillab.eu");
             if(!userOptional.isPresent()){
                 User admin = new User("Admin","admin@skillab.eu","adminskillab");
-                userService.createUser(admin, "citizen");
+                userService.createUser(admin, "citizen","");
                 userPrivilegedService.givePrivilegeToUser("admin@skillab.eu");
             }
 

@@ -35,8 +35,8 @@ public class UserPrivilegedController {
     }
 
     @PostMapping("/users/create")
-    User createUser(@RequestBody User user, @RequestParam String installation){
-        return userService.createUser(user, installation);
+    User createUser(@RequestBody User user, @RequestParam String installation, @RequestParam String organization){
+        return userService.createUser(user, installation, organization);
     }
 
 }

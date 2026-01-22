@@ -47,12 +47,13 @@ public class UserService {
 
     SecureRandom secureRandom = new SecureRandom();
 
-    public User createUser(User user, String installation) {
+    public User createUser(User user, String installation, String organization) {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         if (!userOptional.isPresent()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles("SIMPLE");
             user.setInstallation(installation);
+            user.setOrganization(organization);
             SystemConfiguration systemConfiguration = new SystemConfiguration();
             user.setConfigurations(systemConfiguration);
             systemConfiguration.setUser(user);
