@@ -9,24 +9,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
-
 
 @Service
 public class ProxyService {
 
     public ProxyService() {
-        // Configure Unirest Timeouts (Connect, Socket)
+        // 30 Seconds timeout
         Unirest.config()
-                .connectTimeout(5000) // 5 seconds
-                .socketTimeout(20000) // 20 seconds (wait for data)
-                .automaticRetries(false); // Don't retry automatically for proxies
+                .connectTimeout(10000)
+                .socketTimeout(30000)
+                .automaticRetries(false);
     }
-
 
     public ResponseEntity<byte[]> processProxyRequest(
             byte[] body,
@@ -36,68 +32,83 @@ public class ProxyService {
             Map<String, String> customHeaders,
             String prefixToRemove
     ) throws URISyntaxException {
+
+        // --- 1. URL Construction ---
         String requestUrl = request.getRequestURI();
         String targetPath = requestUrl.replace(prefixToRemove, "");
-
-        // Ensure we don't end up with double slashes if prefix match wasn't perfect
         if (!targetBaseUrl.endsWith("/") && !targetPath.startsWith("/")) {
             targetBaseUrl += "/";
         }
-
         String finalUrl = targetBaseUrl + targetPath +
                 (request.getQueryString() != null ? "?" + request.getQueryString() : "");
 
-        System.out.println("GATEWAY PROXYING TO: " + finalUrl);
+        System.out.println(">>> [PROXY START] Method: " + method + " | URL: " + finalUrl);
 
-        // 2. Prepare Unirest Request
-        // Unirest.request handles GET, POST, PUT, DELETE, etc. dynamically
+        // --- 2. Request Preparation ---
         var unirestReq = Unirest.request(method.name(), finalUrl);
 
-        // 3. Copy Incoming Headers
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
-
-            // FILTER SENSITIVE HEADERS
-            if (!headerName.equalsIgnoreCase("Content-Length") &&
-                    !headerName.equalsIgnoreCase("Host") &&
-                    !headerName.equalsIgnoreCase("Connection") &&
-                    !headerName.equalsIgnoreCase("Transfer-Encoding")) {
+            // FILTER HEADERS
+            if (!headerName.equalsIgnoreCase("Host") &&
+                    !headerName.equalsIgnoreCase("Accept-Encoding") &&
+                    !headerName.equalsIgnoreCase("Content-Length") &&
+                    !headerName.equalsIgnoreCase("Transfer-Encoding") &&
+                    !headerName.equalsIgnoreCase("Connection")) {
 
                 Enumeration<String> values = request.getHeaders(headerName);
                 while(values.hasMoreElements()){
-                    unirestReq.header(headerName, values.nextElement());
+                    String val = values.nextElement();
+                    unirestReq.header(headerName, val);
                 }
             }
         }
 
-        // 4. Inject Custom Headers (User Info)
         if (customHeaders != null) {
             customHeaders.forEach(unirestReq::header);
         }
 
-        // 5. Set Body (if exists)
         if (body != null && body.length > 0) {
             unirestReq.body(body);
         }
 
         try {
-            // 6. Execute Request
+            System.out.println("... [PROXY SENDING] Waiting for downstream response ...");
+            long startTime = System.currentTimeMillis();
+
+            // --- 3. Execute Request ---
+            // If the code hangs here, it is a Docker Network / Firewall issue
             HttpResponse<byte[]> response = unirestReq.asBytes();
 
-            // 7. Map Unirest Response -> Spring ResponseEntity
+            long duration = System.currentTimeMillis() - startTime;
+            System.out.println("<<< [PROXY RECEIVED] Status: " + response.getStatus() + " | Time: " + duration + "ms");
+
+            // --- 4. Process Body ---
+            byte[] responseBody = response.getBody();
+            int bodySize = (responseBody != null) ? responseBody.length : 0;
+            System.out.println("    [PROXY BODY] Size: " + bodySize + " bytes");
+
+            // --- 5. Map Headers ---
             HttpHeaders responseHeaders = new HttpHeaders();
-            response.getHeaders().all().forEach(header ->
-                    responseHeaders.add(header.getName(), header.getValue())
-            );
+            response.getHeaders().all().forEach(header -> {
+                // Strip chunking/encoding headers to avoid confusing Nginx
+                if (!header.getName().equalsIgnoreCase("Transfer-Encoding") &&
+                        !header.getName().equalsIgnoreCase("Content-Encoding")) {
+                    responseHeaders.add(header.getName(), header.getValue());
+                }
+            });
+
+            System.out.println("=== [PROXY FINISHED] Returning ResponseEntity to Controller ===");
 
             return ResponseEntity.status(response.getStatus())
                     .headers(responseHeaders)
-                    .body(response.getBody());
+                    .body(responseBody);
 
         } catch (UnirestException e) {
+            System.err.println("!!! [PROXY ERROR] Exception: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.status(502).build();
         }
     }
 }
