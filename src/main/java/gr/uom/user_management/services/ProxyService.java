@@ -59,6 +59,7 @@ public class ProxyService {
             }
         }
 
+        headers.set("Connection", "close");
         // Inject Custom Headers
         if (customHeaders != null) {
             customHeaders.forEach(headers::add);
