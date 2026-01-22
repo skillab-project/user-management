@@ -1,32 +1,32 @@
 package gr.uom.user_management.services;
 
-import org.springframework.http.HttpEntity;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
+
 
 @Service
 public class ProxyService {
 
-    private final RestTemplate restTemplate;
-
     public ProxyService() {
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(3000); // 3 seconds to connect
-        factory.setReadTimeout(5000);    // 5 seconds to read data
-        this.restTemplate = new RestTemplate(factory);
+        // Configure Unirest Timeouts (Connect, Socket)
+        Unirest.config()
+                .connectTimeout(5000) // 5 seconds
+                .socketTimeout(20000) // 20 seconds (wait for data)
+                .automaticRetries(false); // Don't retry automatically for proxies
     }
+
 
     public ResponseEntity<byte[]> processProxyRequest(
             byte[] body,
@@ -37,45 +37,66 @@ public class ProxyService {
             String prefixToRemove
     ) throws URISyntaxException {
         String requestUrl = request.getRequestURI();
-
-        // Use the dynamic prefix passed from controller
         String targetPath = requestUrl.replace(prefixToRemove, "");
 
-        URI uri = new URI(targetBaseUrl + targetPath +
-                (request.getQueryString() != null ? "?" + request.getQueryString() : ""));
-        System.out.println("GATEWAY PROXYING TO: " + uri.toString());
+        // Ensure we don't end up with double slashes if prefix match wasn't perfect
+        if (!targetBaseUrl.endsWith("/") && !targetPath.startsWith("/")) {
+            targetBaseUrl += "/";
+        }
 
-        // Copy Incoming Headers
-        HttpHeaders headers = new HttpHeaders();
+        String finalUrl = targetBaseUrl + targetPath +
+                (request.getQueryString() != null ? "?" + request.getQueryString() : "");
+
+        System.out.println("GATEWAY PROXYING TO: " + finalUrl);
+
+        // 2. Prepare Unirest Request
+        // Unirest.request handles GET, POST, PUT, DELETE, etc. dynamically
+        var unirestReq = Unirest.request(method.name(), finalUrl);
+
+        // 3. Copy Incoming Headers
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
-            // Skip content-length to let RestTemplate calculate it
+
+            // FILTER SENSITIVE HEADERS
             if (!headerName.equalsIgnoreCase("Content-Length") &&
                     !headerName.equalsIgnoreCase("Host") &&
-                    !headerName.equalsIgnoreCase("Transfer-Encoding") &&
-                    !headerName.equalsIgnoreCase("Connection")) {
-                headers.addAll(headerName, Collections.list(request.getHeaders(headerName)));
+                    !headerName.equalsIgnoreCase("Connection") &&
+                    !headerName.equalsIgnoreCase("Transfer-Encoding")) {
+
+                Enumeration<String> values = request.getHeaders(headerName);
+                while(values.hasMoreElements()){
+                    unirestReq.header(headerName, values.nextElement());
+                }
             }
         }
 
-        headers.set("Connection", "close");
-        // Inject Custom Headers
+        // 4. Inject Custom Headers (User Info)
         if (customHeaders != null) {
-            customHeaders.forEach(headers::add);
+            customHeaders.forEach(unirestReq::header);
         }
 
-        // Create Entity and Forward
-        HttpEntity<byte[]> httpEntity = new HttpEntity<>(body, headers);
+        // 5. Set Body (if exists)
+        if (body != null && body.length > 0) {
+            unirestReq.body(body);
+        }
 
         try {
-            return restTemplate.exchange(uri, method, httpEntity, byte[].class);
-        } catch (HttpStatusCodeException e) {
-            // Handle errors from downstream service (4xx, 5xx)
-            return ResponseEntity.status(e.getRawStatusCode())
-                    .headers(e.getResponseHeaders())
-                    .body(e.getResponseBodyAsByteArray());
-        } catch (Exception e) {
+            // 6. Execute Request
+            HttpResponse<byte[]> response = unirestReq.asBytes();
+
+            // 7. Map Unirest Response -> Spring ResponseEntity
+            HttpHeaders responseHeaders = new HttpHeaders();
+            response.getHeaders().all().forEach(header ->
+                    responseHeaders.add(header.getName(), header.getValue())
+            );
+
+            return ResponseEntity.status(response.getStatus())
+                    .headers(responseHeaders)
+                    .body(response.getBody());
+
+        } catch (UnirestException e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
     }
