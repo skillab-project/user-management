@@ -19,8 +19,8 @@ public class ProxyService {
     public ProxyService() {
         // 30 Seconds timeout
         Unirest.config()
-                .connectTimeout(10000)
-                .socketTimeout(30000)
+                .connectTimeout(10000) // 10s to find the server
+                .socketTimeout(300000) // 5 Minutes wait for data
                 .automaticRetries(false);
     }
 
@@ -32,7 +32,6 @@ public class ProxyService {
             Map<String, String> customHeaders,
             String prefixToRemove
     ) throws URISyntaxException {
-
         // --- 1. URL Construction ---
         String requestUrl = request.getRequestURI();
         String targetPath = requestUrl.replace(prefixToRemove, "");
@@ -56,7 +55,6 @@ public class ProxyService {
                     !headerName.equalsIgnoreCase("Content-Length") &&
                     !headerName.equalsIgnoreCase("Transfer-Encoding") &&
                     !headerName.equalsIgnoreCase("Connection")) {
-
                 Enumeration<String> values = request.getHeaders(headerName);
                 while(values.hasMoreElements()){
                     String val = values.nextElement();
@@ -78,7 +76,6 @@ public class ProxyService {
             long startTime = System.currentTimeMillis();
 
             // --- 3. Execute Request ---
-            // If the code hangs here, it is a Docker Network / Firewall issue
             HttpResponse<byte[]> response = unirestReq.asBytes();
 
             long duration = System.currentTimeMillis() - startTime;
@@ -86,8 +83,6 @@ public class ProxyService {
 
             // --- 4. Process Body ---
             byte[] responseBody = response.getBody();
-            int bodySize = (responseBody != null) ? responseBody.length : 0;
-            System.out.println("    [PROXY BODY] Size: " + bodySize + " bytes");
 
             // --- 5. Map Headers ---
             HttpHeaders responseHeaders = new HttpHeaders();
