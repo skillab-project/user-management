@@ -35,23 +35,23 @@ public class GatewayController {
     private String policyServiceUrl;
 
     // --- Hiring Proxy ---
-    @RequestMapping("/hiring-management/**")
+    @RequestMapping("/hiring-management-backend/**")
     public ResponseEntity<byte[]> proxyHiring(
             @RequestBody(required = false) byte[] body,
             HttpMethod method,
             HttpServletRequest request
     ) throws URISyntaxException {
-        return handleProxy(body, method, request, hiringServiceUrl, "/hiring-management");
+        return handleProxy(body, method, request, hiringServiceUrl, "/hiring-management-backend");
     }
 
     // --- Policy Proxy ---
-    @RequestMapping("/policy/**")
+    @RequestMapping("/backend-policy/**")
     public ResponseEntity<byte[]> proxyPolicy(
             @RequestBody(required = false) byte[] body,
             HttpMethod method,
             HttpServletRequest request
     ) throws URISyntaxException {
-        return handleProxy(body, method, request, policyServiceUrl, "/policy");
+        return handleProxy(body, method, request, policyServiceUrl, "/backend-policy");
     }
 
 
