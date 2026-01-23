@@ -4,11 +4,22 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class TokenUtil {
+
+    private static String secret;
+
+    @Value("${gr.uom.jwt.secret}")
+    public void setSecret(String secret) {
+        TokenUtil.secret = secret;
+    }
+
     public static DecodedJWT getDecodedJWTfromToken(String token){
         String refreshToken = token.substring("Bearer ".length());
         Algorithm algorithm = TokenUtil.getAlgorithm();
@@ -18,7 +29,7 @@ public class TokenUtil {
     }
 
     public static Algorithm getAlgorithm(){
-        return Algorithm.HMAC256("secret".getBytes());
+        return Algorithm.HMAC256(secret.getBytes());
     }
 
     public static String generateAccessToken(String email, StringBuffer requestURL, String id, String name, List<String> collect, String installation) {
