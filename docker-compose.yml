@@ -18,6 +18,9 @@ services:
       - FRONTEND_URL=https://portal.skillab-project.eu
       - HIRING_SERVICE_URL=http://hiring-management-backend:8080
       - POLICY_SERVICE_URL=http://backend-policy:8080
+      - EMPLOYEEMANAGEMENT_SERVICE_URL=http://employee-management-backend:8080
+      - KUDETECTION_SERVICE_URL=http://ku-detection-backend:5000
+      - POLICYSUCCESSEVALUATOR_SERVICE_URL=http://policy-success-evaluator-backend:8878
     ports:
       - "8081:8080"
     restart: unless-stopped

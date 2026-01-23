@@ -34,6 +34,15 @@ public class GatewayController {
     @Value("${policy.service.url}")
     private String policyServiceUrl;
 
+    @Value("${employeemanagement.service.url}")
+    private String employeeManagementUrl;
+
+    @Value("${kudetection.service.url}")
+    private String kUDetectionUrl;
+
+    @Value("${policysuccessevaluator.service.url}")
+    private String policySuccessEvaluatorUrl;
+
     // --- Hiring Proxy ---
     @RequestMapping("/hiring-management-backend/**")
     public ResponseEntity<byte[]> proxyHiring(
@@ -52,6 +61,36 @@ public class GatewayController {
             HttpServletRequest request
     ) throws URISyntaxException {
         return handleProxy(body, method, request, policyServiceUrl, "/backend-policy");
+    }
+
+    // --- Employee Management Proxy ---
+    @RequestMapping("/employee-management-backend/**")
+    public ResponseEntity<byte[]> proxyEmployeeManagement(
+            @RequestBody(required = false) byte[] body,
+            HttpMethod method,
+            HttpServletRequest request
+    ) throws URISyntaxException {
+        return handleProxy(body, method, request, employeeManagementUrl, "/employee-management-backend");
+    }
+
+    // --- KU Detection Proxy ---
+    @RequestMapping("/ku-detection-backend/**")
+    public ResponseEntity<byte[]> proxyKUDetection(
+            @RequestBody(required = false) byte[] body,
+            HttpMethod method,
+            HttpServletRequest request
+    ) throws URISyntaxException {
+        return handleProxy(body, method, request, kUDetectionUrl, "/ku-detection-backend");
+    }
+
+    // --- Policy Success Evaluator Proxy ---
+    @RequestMapping("/policy-success-evaluator-backend/**")
+    public ResponseEntity<byte[]> proxyPolicySuccessEvaluator(
+            @RequestBody(required = false) byte[] body,
+            HttpMethod method,
+            HttpServletRequest request
+    ) throws URISyntaxException {
+        return handleProxy(body, method, request, policySuccessEvaluatorUrl, "/policy-success-evaluator-backend");
     }
 
 
