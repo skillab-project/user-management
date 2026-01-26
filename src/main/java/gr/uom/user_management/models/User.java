@@ -24,7 +24,9 @@ public class User {
     private String portfolio;
     //citizen, industry, education, policy-education, policy-industry
     private String installation;
-    private String organization;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL)
@@ -134,11 +136,11 @@ public class User {
         this.installation = installation;
     }
 
-    public String getOrganization() {
+    public Organization getOrganization() {
         return organization;
     }
 
-    public void setOrganization(String organization) {
+    public void setOrganization(Organization organization) {
         this.organization = organization;
     }
 

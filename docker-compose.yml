@@ -15,7 +15,11 @@ services:
       - SPRING_JPA_HIBERNATE_DDL-AUTO=update
       - SPRING_MAIL_USERNAME=${MAIL_USERNAME}
       - SPRING_MAIL_PASSWORD=${MAIL_PASSWORD}
-      - GR_UOM_JWT_SECRET=secret
+      - APP_INSTALLATION=citizen
+      - APP_ADMIN_EMAIL=admin@skillab.eu
+      - APP_ADMIN_PASSWORD=adminskillab
+      - APP_ORGANIZATION_NAME=Organization
+      - APP_JWT_SECRET=secret
       - FRONTEND_URL=https://portal.skillab-project.eu
       - HIRING_SERVICE_URL=http://hiring-management-backend:8080
       - POLICY_SERVICE_URL=http://backend-policy:8080

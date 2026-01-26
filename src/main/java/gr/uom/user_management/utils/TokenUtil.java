@@ -15,7 +15,7 @@ public class TokenUtil {
 
     private static String secret;
 
-    @Value("${gr.uom.jwt.secret}")
+    @Value("${app.jwt.secret}")
     public void setSecret(String secret) {
         TokenUtil.secret = secret;
     }

@@ -1,5 +1,6 @@
 package gr.uom.user_management.controllers;
 
+import gr.uom.user_management.models.Organization;
 import gr.uom.user_management.models.User;
 import gr.uom.user_management.services.UserPrivilegedService;
 import gr.uom.user_management.services.UserService;
@@ -39,4 +40,18 @@ public class UserPrivilegedController {
         return userService.createUser(user, installation, organization);
     }
 
+    @PutMapping("/users/organization")
+    User changeUserOrganization(@RequestParam String email, @RequestParam String name){
+        return userPrivilegedService.changeUserOrganization(email, name);
+    }
+
+    @PostMapping("/organization")
+    Organization createOrganization(@RequestParam String name){
+        return userPrivilegedService.createOrganization(name);
+    }
+
+    @GetMapping("/organization")
+    List<Organization> getAllOrganizations(){
+        return userPrivilegedService.getAllOrganizations();
+    }
 }

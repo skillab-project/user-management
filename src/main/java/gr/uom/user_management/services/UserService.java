@@ -1,14 +1,8 @@
 package gr.uom.user_management.services;
 
 import gr.uom.user_management.controllers.dto.ResetPasswordRequest;
-import gr.uom.user_management.models.Occupation;
-import gr.uom.user_management.models.Skill;
-import gr.uom.user_management.models.SystemConfiguration;
-import gr.uom.user_management.models.User;
-import gr.uom.user_management.repositories.OccupationRepository;
-import gr.uom.user_management.repositories.SkillRepository;
-import gr.uom.user_management.repositories.SystemConfigurationRepository;
-import gr.uom.user_management.repositories.UserRepository;
+import gr.uom.user_management.models.*;
+import gr.uom.user_management.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -40,6 +34,9 @@ public class UserService {
     SystemConfigurationRepository systemConfigurationRepository;
 
     @Autowired
+    OrganizationRepository organizationRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -53,7 +50,10 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles("SIMPLE");
             user.setInstallation(installation);
-            user.setOrganization(organization);
+            if(organization!=null && !organization.isEmpty()){
+                Optional<Organization> optionalOrganization = organizationRepository.findByName(organization);
+                optionalOrganization.ifPresent(user::setOrganization);
+            }
             SystemConfiguration systemConfiguration = new SystemConfiguration();
             user.setConfigurations(systemConfiguration);
             systemConfiguration.setUser(user);

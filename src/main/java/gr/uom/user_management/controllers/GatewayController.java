@@ -105,7 +105,7 @@ public class GatewayController {
             User user = userOpt.get();
             customHeaders.put("X-User-Id", user.getId().toString());
             customHeaders.put("X-User-Email", user.getEmail());
-            customHeaders.put("X-User-Organization", user.getOrganization());
+            customHeaders.put("X-User-Organization", user.getOrganization().getName());
         }
 
         // Adjust the URI in the ProxyService call
