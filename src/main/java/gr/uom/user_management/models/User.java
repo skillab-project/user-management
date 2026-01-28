@@ -24,7 +24,7 @@ public class User {
     private String portfolio;
     //citizen, industry, education, policy-education, policy-industry
     private String installation;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
     @OneToMany(
