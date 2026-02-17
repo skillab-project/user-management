@@ -65,12 +65,15 @@ pipeline {
             steps {
                 withCredentials([
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: "${DOCKER_REG_CREDS}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'],
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: "mail-creds", usernameVariable: 'MAIL_USERNAME', passwordVariable: 'MAIL_PASSWORD']
+                    [$class: 'UsernamePasswordMultiBinding', credentialsId: "mail-creds", usernameVariable: 'MAIL_USERNAME', passwordVariable: 'MAIL_PASSWORD'],
+                    [$class: 'UsernamePasswordMultiBinding', credentialsId: "tracker-creds", usernameVariable: 'TRACKER_USERNAME', passwordVariable: 'TRACKER_PASSWORD']
                 ]){
                     echo "***** Deploy Application *****"
                     sh '''
                         export MAIL_USERNAME=${MAIL_USERNAME}
                         export MAIL_PASSWORD=${MAIL_PASSWORD}
+                        export TRACKER_USERNAME=${TRACKER_USERNAME}
+                        export TRACKER_PASSWORD=${TRACKER_PASSWORD}
                         docker login ${DOCKER_REG} -u ${USERNAME} -p ${PASSWORD}
                         docker compose pull
                         docker compose up -d

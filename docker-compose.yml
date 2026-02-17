@@ -21,6 +21,9 @@ services:
       - APP_ORGANIZATION_NAME=Organization
       - APP_JWT_SECRET=secret
       - FRONTEND_URL=https://portal.skillab-project.eu
+      - TRACKER_API_URL=https://skillab-tracker.csd.auth.gr
+      - TRACKER_API_USERNAME=${TRACKER_USERNAME}
+      - TRACKER_API_PASSWORD=${TRACKER_PASSWORD}
       - HIRING_SERVICE_URL=http://hiring-management-backend:8080
       - POLICY_SERVICE_URL=http://backend-policy:8080
       - EMPLOYEEMANAGEMENT_SERVICE_URL=http://employee-management-backend:8080

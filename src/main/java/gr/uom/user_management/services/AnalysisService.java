@@ -5,6 +5,7 @@ import gr.uom.user_management.repositories.AnalysisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -20,10 +21,10 @@ public class AnalysisService {
     AnalysisAsyncService analysisAsyncService;
 
 
-    public Analysis checkIfSameAnalysisExists(String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, Integer limitData) {
+    public Analysis checkIfSameAnalysisExists(String sessionId, String filterOccupation, String filterSources, Integer limitData) {
         Optional<Analysis> existing = analysisRepository
-                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSourcesAndLimitData(
-                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData
+                .findBySessionIdAndFilterOccupationAndFilterSourcesAndLimitData(
+                        sessionId, filterOccupation, filterSources, limitData
                 );
 
         if(existing.isPresent())
@@ -33,23 +34,24 @@ public class AnalysisService {
     }
 
 
-    public void startNewAnalysis(String userId, String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, Integer limitData) {
+    public Analysis startNewAnalysis(String sessionId, String filterOccupation, String filterSources, Integer limitData) {
         // check if it already exists
         Optional<Analysis> existing = analysisRepository
-                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSourcesAndLimitData(
-                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData
+                .findBySessionIdAndFilterOccupationAndFilterSourcesAndLimitData(
+                        sessionId, filterOccupation, filterSources, limitData
                 );
         if(existing.isPresent()){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Analysis with these filters already exist!");
         }
 
         // create entry in db
-        Analysis newAnalysis = new Analysis(userId, sessionId, false, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData);
+        Analysis newAnalysis = new Analysis(sessionId, false, filterOccupation, filterSources, limitData);
         analysisRepository.save(newAnalysis);
 
         // Start analysis in background
         analysisAsyncService.runAnalysisInBackground(newAnalysis);
         System.out.println("Continue without waiting");
+        return newAnalysis;
     }
 
 
@@ -66,53 +68,36 @@ public class AnalysisService {
         analysisRepository.delete(analysis);
     }
 
-    public void startNewAnalysisClustering(String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, int clusteringNumber, Integer limitData) {
-        // check if it already exists
-        Optional<Analysis> existing = analysisRepository
-                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSourcesAndLimitData(
-                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData
-                );
-        if(!existing.isPresent()){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Analysis with these filters doesn't exist!");
-        }
-
-        // Start new clustering analysis in background
-        analysisAsyncService.runNewClusteringAnalysisInBackground(existing.get(), clusteringNumber);
-        System.out.println("Continue without waiting");
+    @Transactional(readOnly = true)
+    public String getDescriptiveResults(String analysisId) {
+        Analysis a = analysisRepository.findById(UUID.fromString(analysisId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return a.getDescriptiveResult();
     }
 
-
-
-    public Analysis manuallyChangeAnalysis(String id, Boolean finished, String userId) {
-        Optional<Analysis> analysisOptional = analysisRepository.findById(UUID.fromString(id));
-        if(analysisOptional.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Analysis with this id doesn't exist!");
-        }
-
-        Analysis analysis = analysisOptional.get();
-        if (finished!=null) {
-            analysis.setFinished(finished);
-        }
-        if (userId!=null && !userId.trim().isEmpty()) {
-            analysis.setUserId(userId);
-        }
-
-        analysisRepository.save(analysis);
-        return analysis;
+    @Transactional(readOnly = true)
+    public String getDescriptiveLocationResults(String analysisId) {
+        Analysis a = analysisRepository.findById(UUID.fromString(analysisId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return a.getDescriptiveLocationResult();
     }
 
-    public void manuallyCreateNewAnalysis(String userId, String sessionId, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, Integer limitData) {
-        // check if it already exists
-        Optional<Analysis> existing = analysisRepository
-                .findBySessionIdAndFilterOccupationAndFilterMinDateAndFilterMaxDateAndFilterSourcesAndLimitData(
-                        sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData
-                );
-        if(existing.isPresent()){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Analysis with these filters already exist!");
-        }
-
-        // create entry in db
-        Analysis newAnalysis = new Analysis(userId, sessionId, false, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData);
-        analysisRepository.save(newAnalysis);
+    @Transactional(readOnly = true)
+    public String getExploratoryResults(String analysisId) {
+        Analysis a = analysisRepository.findById(UUID.fromString(analysisId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return a.getExploratoryResult();
     }
+
+    @Transactional(readOnly = true)
+    public String getTrendResults(String analysisId) {
+        Analysis a = analysisRepository.findById(UUID.fromString(analysisId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return a.getTrendResult();
+    }
+
+    public Analysis getAnalysisWithId(String analysisId) {
+        return analysisRepository.findById(UUID.fromString(analysisId)).orElseThrow();
+    }
+
 }

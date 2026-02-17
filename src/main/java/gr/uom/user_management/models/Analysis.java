@@ -1,5 +1,7 @@
 package gr.uom.user_management.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -8,48 +10,32 @@ public class Analysis {
     @Id
     @GeneratedValue
     private UUID id;
-    private String userId;
     private Boolean finished;
-    private String completeSessionId;
     private String sessionId;
     private String filterOccupation;
-    private String filterMinDate;
-    private String filterMaxDate;
     private String filterSources;
     private Integer limitData;
+    @Column(columnDefinition = "TEXT")
+    @JsonIgnore
+    private String descriptiveResult;
+    @Column(columnDefinition = "TEXT")
+    @JsonIgnore
+    private String descriptiveLocationResult;
+    @Column(columnDefinition = "TEXT")
+    @JsonIgnore
+    private String exploratoryResult;
+    @Column(columnDefinition = "TEXT")
+    @JsonIgnore
+    private String trendResult;
 
 
     public Analysis() {
     }
 
-    public Analysis(String userId, String sessionId, Boolean finished, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, Integer limitData) {
-        this.userId = userId;
-        if(sessionId.equals("profiles") || sessionId.equals("courses")){
-            this.completeSessionId = sessionId + "-sources-" + filterSources + "-limit-" + limitData;
-        }
-        else {
-            this.completeSessionId = sessionId + "-occupation-" + filterOccupation.replaceAll("[^a-zA-Z0-9.-]", "_")
-                    + "-minDate-" + filterMinDate + "-maxDate-" + filterMaxDate + "-sources-" + filterSources  + "-limit-" + limitData;
-        }
-        System.out.println("completeSessionId: " + completeSessionId);
+    public Analysis(String sessionId, Boolean finished, String filterOccupation, String filterSources, Integer limitData) {
         this.sessionId = sessionId;
         this.finished = finished;
         this.filterOccupation = filterOccupation;
-        this.filterMinDate = filterMinDate;
-        this.filterMaxDate = filterMaxDate;
-        this.filterSources = filterSources;
-        this.limitData = limitData;
-    }
-
-    public Analysis(UUID id, String userId, String completeSessionId, String sessionId, Boolean finished, String filterOccupation, String filterMinDate, String filterMaxDate, String filterSources, Integer limitData) {
-        this.id = id;
-        this.userId = userId;
-        this.completeSessionId = completeSessionId;
-        this.sessionId = sessionId;
-        this.finished = finished;
-        this.filterOccupation = filterOccupation;
-        this.filterMinDate = filterMinDate;
-        this.filterMaxDate = filterMaxDate;
         this.filterSources = filterSources;
         this.limitData = limitData;
     }
@@ -60,22 +46,6 @@ public class Analysis {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getCompleteSessionId() {
-        return completeSessionId;
-    }
-
-    public void setCompleteSessionId(String completeSessionId) {
-        this.completeSessionId = completeSessionId;
     }
 
     public String getSessionId() {
@@ -102,22 +72,6 @@ public class Analysis {
         this.filterOccupation = filterOccupation;
     }
 
-    public String getFilterMinDate() {
-        return filterMinDate;
-    }
-
-    public void setFilterMinDate(String filterMinDate) {
-        this.filterMinDate = filterMinDate;
-    }
-
-    public String getFilterMaxDate() {
-        return filterMaxDate;
-    }
-
-    public void setFilterMaxDate(String filterMaxDate) {
-        this.filterMaxDate = filterMaxDate;
-    }
-
     public String getFilterSources() {
         return filterSources;
     }
@@ -132,5 +86,37 @@ public class Analysis {
 
     public void setLimitData(Integer limitData) {
         this.limitData = limitData;
+    }
+
+    public String getDescriptiveResult() {
+        return descriptiveResult;
+    }
+
+    public void setDescriptiveResult(String descriptiveResult) {
+        this.descriptiveResult = descriptiveResult;
+    }
+
+    public String getDescriptiveLocationResult() {
+        return descriptiveLocationResult;
+    }
+
+    public void setDescriptiveLocationResult(String descriptiveLocationResult) {
+        this.descriptiveLocationResult = descriptiveLocationResult;
+    }
+
+    public String getExploratoryResult() {
+        return exploratoryResult;
+    }
+
+    public void setExploratoryResult(String exploratoryResult) {
+        this.exploratoryResult = exploratoryResult;
+    }
+
+    public String getTrendResult() {
+        return trendResult;
+    }
+
+    public void setTrendResult(String trendResult) {
+        this.trendResult = trendResult;
     }
 }

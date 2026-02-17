@@ -21,40 +21,17 @@ public class AnalysisController {
     @GetMapping("/check")
     Analysis checkIfSameAnalysisExists(@RequestParam String sessionId,
                                        @RequestParam(required = false) String filterOccupation,
-                                       @RequestParam(required = false) String filterMinDate,
-                                       @RequestParam(required = false) String filterMaxDate,
                                        @RequestParam(required = false) String filterSources,
                                        @RequestParam(required = false) Integer limitData){
-        return analysisService.checkIfSameAnalysisExists(sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData);
+        return analysisService.checkIfSameAnalysisExists(sessionId, filterOccupation, filterSources, limitData);
     }
 
     @PostMapping("new")
-    ResponseEntity<?> startNewAnalysis(@RequestParam String userId,
-                                       @RequestParam String sessionId,
+    Analysis startNewAnalysis(@RequestParam String sessionId,
                                        @RequestParam(required = false) String filterOccupation,
-                                       @RequestParam(required = false) String filterMinDate,
-                                       @RequestParam(required = false) String filterMaxDate,
                                        @RequestParam(required = false) String filterSources,
                                        @RequestParam(required = false) Integer limitData){
-        analysisService.startNewAnalysis(userId, sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("new/{noClustering}")
-    ResponseEntity<?> startNewAnalysisClustering(@RequestParam String sessionId,
-                                                 @PathVariable String noClustering,
-                                                 @RequestParam(required = false) String filterOccupation,
-                                                 @RequestParam(required = false) String filterMinDate,
-                                                 @RequestParam(required = false) String filterMaxDate,
-                                                 @RequestParam(required = false) String filterSources,
-                                                 @RequestParam(required = false) Integer limitData){
-        try {
-            int clusteringNumber = Integer.parseInt(noClustering);
-            analysisService.startNewAnalysisClustering(sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, clusteringNumber, limitData);
-            return ResponseEntity.ok().build();
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body("Invalid clustering number: must be an integer");
-        }
+        return analysisService.startNewAnalysis(sessionId, filterOccupation, filterSources, limitData);
     }
 
     @GetMapping()
@@ -68,21 +45,40 @@ public class AnalysisController {
         return ResponseEntity.ok().build();
     }
 
-
-    @PostMapping("manually/new")
-    ResponseEntity<?> manuallyCreateNewAnalysis(@RequestParam String userId,
-                                       @RequestParam String sessionId,
-                                       @RequestParam(required = false) String filterOccupation,
-                                       @RequestParam(required = false) String filterMinDate,
-                                       @RequestParam(required = false) String filterMaxDate,
-                                       @RequestParam(required = false) String filterSources,
-                                       @RequestParam(required = false) Integer limitData){
-        analysisService.manuallyCreateNewAnalysis(userId, sessionId, filterOccupation, filterMinDate, filterMaxDate, filterSources, limitData);
-        return ResponseEntity.ok().build();
+    @GetMapping("/{id}/check")
+    public Analysis getAnalysisWithId(@PathVariable String id){
+        return analysisService.getAnalysisWithId(id);
     }
 
-    @PutMapping("manually/new")
-    Analysis manuallyChangeAnalysis(@RequestParam String id, @RequestParam(required = false) Boolean finished, @RequestParam(required = false) String userId){
-        return analysisService.manuallyChangeAnalysis(id, finished, userId);
+    @GetMapping("/{id}/descriptive")
+    public ResponseEntity<String> getDescriptive(@PathVariable String id) {
+        String result = analysisService.getDescriptiveResults(id);
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(result);
+    }
+
+    @GetMapping("/{id}/descriptivelocation")
+    public ResponseEntity<String> getDescriptiveLocation(@PathVariable String id) {
+        String result = analysisService.getDescriptiveLocationResults(id);
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(result);
+    }
+
+    @GetMapping("/{id}/exploratory")
+    public ResponseEntity<String> getExploratory(@PathVariable String id) {
+        String result = analysisService.getExploratoryResults(id);
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(result);
+    }
+
+    @GetMapping("/{id}/trend")
+    public ResponseEntity<String> getTrend(@PathVariable String id) {
+        String result = analysisService.getTrendResults(id);
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(result);
     }
 }
