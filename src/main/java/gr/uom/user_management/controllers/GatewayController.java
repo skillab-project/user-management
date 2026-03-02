@@ -43,6 +43,9 @@ public class GatewayController {
     @Value("${policysuccessevaluator.service.url}")
     private String policySuccessEvaluatorUrl;
 
+    @Value("${futuretechnologytrendsidentifier.service.url}")
+    private String futureTechnologyTrendsIdentifierUrl;
+
     // --- Hiring Proxy ---
     @RequestMapping("/hiring-management-backend/**")
     public ResponseEntity<byte[]> proxyHiring(
@@ -91,6 +94,16 @@ public class GatewayController {
             HttpServletRequest request
     ) throws URISyntaxException {
         return handleProxy(body, method, request, policySuccessEvaluatorUrl, "/policy-success-evaluator-backend");
+    }
+
+    // --- Future Technology Trends Identifier Proxy ---
+    @RequestMapping("/future-technology-trends-identifier-backend/**")
+    public ResponseEntity<byte[]> proxyFutureTechnologyTrendsIdentifier(
+            @RequestBody(required = false) byte[] body,
+            HttpMethod method,
+            HttpServletRequest request
+    ) throws URISyntaxException {
+        return handleProxy(body, method, request, policySuccessEvaluatorUrl, "/future-technology-trends-identifier-backend");
     }
 
 

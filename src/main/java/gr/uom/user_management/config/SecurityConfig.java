@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .mvcMatchers("/employee-management-backend/**").authenticated()
                         .mvcMatchers("/ku-detection-backend/**").authenticated()
                         .mvcMatchers("/policy-success-evaluator-backend/**").authenticated()
+                        .mvcMatchers("/future-technology-trends-identifier-backend/**").authenticated()
                         .anyRequest().authenticated())
                 .userDetailsService(jpaUserDetailsService)
                 .addFilter(new CustomAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class))))
