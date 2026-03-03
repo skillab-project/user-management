@@ -103,7 +103,7 @@ public class GatewayController {
             HttpMethod method,
             HttpServletRequest request
     ) throws URISyntaxException {
-        return handleProxy(body, method, request, policySuccessEvaluatorUrl, "/future-technology-trends-identifier-backend");
+        return handleProxy(body, method, request, futureTechnologyTrendsIdentifierUrl, "/future-technology-trends-identifier-backend");
     }
 
 
