@@ -1,5 +1,6 @@
 package gr.uom.user_management.services;
 
+import kong.unirest.HttpRequestWithBody;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
@@ -44,14 +45,18 @@ public class ProxyService {
         System.out.println(">>> [PROXY START] Method: " + method + " | URL: " + finalUrl);
 
         // --- 2. Request Preparation ---
-        var unirestReq = Unirest.request(method.name(), finalUrl);
+        HttpRequestWithBody unirestReq;
+        if (method == HttpMethod.POST) unirestReq = Unirest.post(finalUrl);
+        else if (method == HttpMethod.PUT) unirestReq = Unirest.put(finalUrl);
+        else if (method == HttpMethod.PATCH) unirestReq = Unirest.patch(finalUrl);
+        else unirestReq = (HttpRequestWithBody) Unirest.request(method.name(), finalUrl);
+
 
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             // FILTER HEADERS
             if (!headerName.equalsIgnoreCase("Host") &&
-                    !headerName.equalsIgnoreCase("Accept-Encoding") &&
                     !headerName.equalsIgnoreCase("Content-Length") &&
                     !headerName.equalsIgnoreCase("Transfer-Encoding") &&
                     !headerName.equalsIgnoreCase("Connection")) {
@@ -67,7 +72,9 @@ public class ProxyService {
             customHeaders.forEach(unirestReq::header);
         }
 
-        if (body != null && body.length > 0) {
+        System.out.println(">>> [PROXY] Body is null? " + (body == null));
+        if (body != null) {
+            System.out.println(">>> [PROXY] Attaching body. Length: " + body.length);
             unirestReq.body(body);
         }
 
