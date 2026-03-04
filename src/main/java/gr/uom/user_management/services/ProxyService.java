@@ -45,27 +45,17 @@ public class ProxyService {
         System.out.println(">>> [PROXY START] Method: " + method + " | URL: " + finalUrl);
 
         // --- 2. Request Preparation ---
-        HttpRequestWithBody unirestReq;
-        if (method == HttpMethod.POST) unirestReq = Unirest.post(finalUrl);
-        else if (method == HttpMethod.PUT) unirestReq = Unirest.put(finalUrl);
-        else if (method == HttpMethod.PATCH) unirestReq = Unirest.patch(finalUrl);
-        else unirestReq = (HttpRequestWithBody) Unirest.request(method.name(), finalUrl);
+        HttpRequestWithBody unirestReq = Unirest.request(method.name(), finalUrl);
 
 
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             // FILTER HEADERS
-            if (!headerName.equalsIgnoreCase("Host") &&
-                    !headerName.equalsIgnoreCase("Content-Length") &&
-                    !headerName.equalsIgnoreCase("Transfer-Encoding") &&
-                    !headerName.equalsIgnoreCase("Connection")) {
-                Enumeration<String> values = request.getHeaders(headerName);
-                while(values.hasMoreElements()){
-                    String val = values.nextElement();
-                    unirestReq.header(headerName, val);
-                }
-            }
+            if (isExcludedHeader(headerName))
+                continue;
+
+            unirestReq.header(headerName, request.getHeader(headerName));
         }
 
         if (customHeaders != null) {
@@ -112,5 +102,13 @@ public class ProxyService {
             e.printStackTrace();
             return ResponseEntity.status(502).build();
         }
+    }
+
+    private boolean isExcludedHeader(String headerName) {
+        return headerName.equalsIgnoreCase("Host") ||
+                headerName.equalsIgnoreCase("Content-Length") || // Let Unirest recalculate
+                headerName.equalsIgnoreCase("Transfer-Encoding") ||
+                headerName.equalsIgnoreCase("Connection") ||
+                headerName.equalsIgnoreCase("Accept-Encoding");
     }
 }
