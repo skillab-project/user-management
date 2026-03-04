@@ -28,7 +28,7 @@ services:
       - POLICY_SERVICE_URL=http://backend-policy:8080
       - EMPLOYEEMANAGEMENT_SERVICE_URL=http://employee-management-backend:8080
       - KUDETECTION_SERVICE_URL=http://ku-detection-backend:5000
-      - POLICYSUCCESSEVALUATOR_SERVICE_URL=http://policy-success-evaluator-backend:8878
+      - POLICYSUCCESSEVALUATOR_SERVICE_URL=http://policy-success-evaluator:8878
       - FUTURETECHNOLOGYTRENDSIDENTIFIER_SERVICE_URL=http://future-technology-trends-identifier:8876
     ports:
       - "8081:8080"
