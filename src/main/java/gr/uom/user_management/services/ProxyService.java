@@ -68,10 +68,15 @@ public class ProxyService {
             System.out.println(">>> [PROXY] Body content: " + new String(body, java.nio.charset.StandardCharsets.UTF_8));
             String contentType = request.getContentType();
             if (contentType != null) {
-                System.out.println(">>> [PROXY] Setting Content-Type: " + contentType);
                 unirestReq.contentType(contentType);
             }
-            unirestReq.body(body);
+            if (contentType != null && contentType.contains("application/json")) {
+                String bodyStr = new String(body, java.nio.charset.StandardCharsets.UTF_8);
+                System.out.println(">>> [PROXY] Sending as JSON string: " + bodyStr);
+                unirestReq.body(bodyStr);
+            } else {
+                unirestReq.body(body);
+            }
         }
 
         try {
