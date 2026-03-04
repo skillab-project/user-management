@@ -6,6 +6,7 @@ import gr.uom.user_management.services.ProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,65 +50,59 @@ public class GatewayController {
     // --- Hiring Proxy ---
     @RequestMapping("/hiring-management-backend/**")
     public ResponseEntity<byte[]> proxyHiring(
-            @RequestBody(required = false) byte[] body,
-            HttpMethod method,
+            RequestEntity<byte[]> requestEntity,
             HttpServletRequest request
     ) throws URISyntaxException {
-        return handleProxy(body, method, request, hiringServiceUrl, "/hiring-management-backend");
+        return handleProxy(requestEntity, request, hiringServiceUrl, "/hiring-management-backend");
     }
 
     // --- Policy Proxy ---
     @RequestMapping("/backend-policy/**")
     public ResponseEntity<byte[]> proxyPolicy(
-            @RequestBody(required = false) byte[] body,
-            HttpMethod method,
+            RequestEntity<byte[]> requestEntity,
             HttpServletRequest request
     ) throws URISyntaxException {
-        return handleProxy(body, method, request, policyServiceUrl, "/backend-policy");
+        return handleProxy(requestEntity, request, policyServiceUrl, "/backend-policy");
     }
 
     // --- Employee Management Proxy ---
     @RequestMapping("/employee-management-backend/**")
     public ResponseEntity<byte[]> proxyEmployeeManagement(
-            @RequestBody(required = false) byte[] body,
-            HttpMethod method,
+            RequestEntity<byte[]> requestEntity,
             HttpServletRequest request
     ) throws URISyntaxException {
-        return handleProxy(body, method, request, employeeManagementUrl, "/employee-management-backend");
+        return handleProxy(requestEntity, request, employeeManagementUrl, "/employee-management-backend");
     }
 
     // --- KU Detection Proxy ---
     @RequestMapping("/ku-detection-backend/**")
     public ResponseEntity<byte[]> proxyKUDetection(
-            @RequestBody(required = false) byte[] body,
-            HttpMethod method,
+            RequestEntity<byte[]> requestEntity,
             HttpServletRequest request
     ) throws URISyntaxException {
-        return handleProxy(body, method, request, kUDetectionUrl, "/ku-detection-backend");
+        return handleProxy(requestEntity, request, kUDetectionUrl, "/ku-detection-backend");
     }
 
     // --- Policy Success Evaluator Proxy ---
     @RequestMapping("/policy-success-evaluator-backend/**")
     public ResponseEntity<byte[]> proxyPolicySuccessEvaluator(
-            @RequestBody(required = false) byte[] body,
-            HttpMethod method,
+            RequestEntity<byte[]> requestEntity,
             HttpServletRequest request
     ) throws URISyntaxException {
-        return handleProxy(body, method, request, policySuccessEvaluatorUrl, "/policy-success-evaluator-backend");
+        return handleProxy(requestEntity, request, policySuccessEvaluatorUrl, "/policy-success-evaluator-backend");
     }
 
     // --- Future Technology Trends Identifier Proxy ---
     @RequestMapping("/future-technology-trends-identifier-backend/**")
     public ResponseEntity<byte[]> proxyFutureTechnologyTrendsIdentifier(
-            @RequestBody(required = false) byte[] body,
-            HttpMethod method,
+            RequestEntity<byte[]> requestEntity,
             HttpServletRequest request
     ) throws URISyntaxException {
-        return handleProxy(body, method, request, futureTechnologyTrendsIdentifierUrl, "/future-technology-trends-identifier-backend");
+        return handleProxy(requestEntity, request, futureTechnologyTrendsIdentifierUrl, "/future-technology-trends-identifier-backend");
     }
 
 
-    private ResponseEntity<byte[]> handleProxy(byte[] body, HttpMethod method, HttpServletRequest request, String targetUrl, String prefixToRemove) throws URISyntaxException {
+    private ResponseEntity<byte[]> handleProxy(RequestEntity<byte[]> requestEntity, HttpServletRequest request, String targetUrl, String prefixToRemove) throws URISyntaxException {
         // Auth & Get User info
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = (String) authentication.getPrincipal();
@@ -123,6 +118,6 @@ public class GatewayController {
 
         // Adjust the URI in the ProxyService call
         // We need to make sure ProxyService knows to strip the specific prefix ("/policy" or "/hiring-management")
-        return proxyService.processProxyRequest(body, method, request, targetUrl, customHeaders, prefixToRemove);
+        return proxyService.processProxyRequest(requestEntity.getBody(), requestEntity.getMethod(), request, targetUrl, customHeaders, prefixToRemove);
     }
 }
