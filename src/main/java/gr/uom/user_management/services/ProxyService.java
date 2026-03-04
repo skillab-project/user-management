@@ -65,6 +65,11 @@ public class ProxyService {
         System.out.println(">>> [PROXY] Body is null? " + (body == null));
         if (body != null) {
             System.out.println(">>> [PROXY] Attaching body. Length: " + body.length);
+            String contentType = request.getContentType();
+            if (contentType != null) {
+                System.out.println(">>> [PROXY] Setting Content-Type: " + contentType);
+                unirestReq.contentType(contentType);
+            }
             unirestReq.body(body);
         }
 
