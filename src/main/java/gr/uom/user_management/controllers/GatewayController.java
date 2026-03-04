@@ -116,8 +116,18 @@ public class GatewayController {
             customHeaders.put("X-User-Organization", user.getOrganization().getName());
         }
 
+        byte[] body = requestEntity.getBody();
+        if (body == null) {
+            try {
+                body = request.getInputStream().readAllBytes();
+                System.out.println(">>> [GATEWAY] Read body from InputStream, length: " + body.length);
+            } catch (Exception e) {
+                System.err.println(">>> [GATEWAY] Failed to read InputStream: " + e.getMessage());
+            }
+        }
+
         // Adjust the URI in the ProxyService call
         // We need to make sure ProxyService knows to strip the specific prefix ("/policy" or "/hiring-management")
-        return proxyService.processProxyRequest(requestEntity.getBody(), requestEntity.getMethod(), request, targetUrl, customHeaders, prefixToRemove);
+        return proxyService.processProxyRequest(body, requestEntity.getMethod(), request, targetUrl, customHeaders, prefixToRemove);
     }
 }
