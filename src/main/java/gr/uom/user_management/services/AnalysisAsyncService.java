@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +36,13 @@ public class AnalysisAsyncService {
     private String apiUrlTrackerUsername;
     @Value("${tracker.api.password}")
     private String apiUrlTrackerPassword;
+
+    @PostConstruct
+    public void configureUnirest() {
+        Unirest.config()
+                .connectTimeout(30_000)      // 30 seconds to establish connection
+                .socketTimeout(300_000);     // 5 minutes to wait for data
+    }
 
     @Async
     public void runAnalysisInBackground(Analysis analysis) {
