@@ -122,9 +122,12 @@ public class UserController {
                 String name = user.get().getName();
                 String id = user.get().getId().toString();
                 String installation = user.get().getInstallation();
+                String organization = "";
+                if(user.get().getOrganization() != null)
+                    organization = user.get().getOrganization().getName();
 
                 //Generate tokens
-                String accessToken = TokenUtil.generateAccessToken(email, request.getRequestURL(), id, name, roles, installation);
+                String accessToken = TokenUtil.generateAccessToken(email, request.getRequestURL(), id, name, roles, installation, organization);
                 String refreshToken = TokenUtil.generateRefreshToken(email, request.getRequestURL());
 
                 Map<String,String> tokens= new HashMap<>();

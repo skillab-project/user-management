@@ -17,6 +17,13 @@ public class SecurityUser implements UserDetails {
         this.user = user;
     }
 
+    public String getOrganization(){
+        if(user!=null && user.getOrganization()!=null) {
+            return user.getOrganization().getName();
+        }
+        return "";
+    }
+
     public String getInstallation(){
         if(user!=null) {
             return user.getInstallation();
