@@ -41,7 +41,7 @@ public class AnalysisAsyncService {
     public void configureUnirest() {
         Unirest.config()
                 .connectTimeout(30_000)      // 30 seconds to establish connection
-                .socketTimeout(600_000);     // 10 minutes to wait for data
+                .socketTimeout(900_000);     // 10 minutes to wait for data
     }
 
     @Async
