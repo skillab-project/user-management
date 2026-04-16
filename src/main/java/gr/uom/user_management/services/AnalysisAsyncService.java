@@ -60,20 +60,22 @@ public class AnalysisAsyncService {
             Integer limit = analysis.getLimitData();
 
             // 1,1. Descriptive Analysis
-            String descriptiveData = fetchJsonFromTracker(apiUrlTracker + "/api/descriptive-analytics/jobs", token, occId, source, limit);
+            String descriptiveData = fetchJsonFromTracker(apiUrlTracker + "/api/descriptive-analytics/"+analysis.getSessionId(), token, occId, source, limit);
             analysis.setDescriptiveResult(descriptiveData);
 
             // 1.2. Location Analysis
-            String descriptiveLocationData = fetchJsonFromTracker(apiUrlTracker + "/api/descriptive-analytics/jobs/locations", token, occId, source, limit);
+            String descriptiveLocationData = fetchJsonFromTracker(apiUrlTracker + "/api/descriptive-analytics/"+analysis.getSessionId()+"/locations", token, occId, source, limit);
             analysis.setDescriptiveLocationResult(descriptiveLocationData);
 
             // 2. Exploratory Analysis
-            String exploratoryData = fetchJsonFromTracker(apiUrlTracker + "/api/exploratory-analytics/jobs/skills-by-location", token, occId, source, limit);
+            String exploratoryData = fetchJsonFromTracker(apiUrlTracker + "/api/exploratory-analytics/"+analysis.getSessionId()+"/skills-by-location", token, occId, source, limit);
             analysis.setExploratoryResult(exploratoryData);
 
             // 3. Trend Analysis
-            String trendData = fetchJsonFromTracker(apiUrlTracker + "/api/trend-analytics/jobs/skills-by-location", token, occId, source, limit);
-            analysis.setTrendResult(trendData);
+            if(analysis.getSessionId().equals("jobs")) {
+                String trendData = fetchJsonFromTracker(apiUrlTracker + "/api/trend-analytics/jobs/skills-by-location", token, occId, source, limit);
+                analysis.setTrendResult(trendData);
+            }
 
             // Mark analysis as finished and save
             analysis.setFinished(true);
