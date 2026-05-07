@@ -30,6 +30,11 @@ public class UserPrivilegedController {
         userPrivilegedService.deleteUser(email);
     }
 
+    @PutMapping("/users/changepassword")
+    void changePassword(@RequestParam String email, @RequestParam String newPassword) {
+        userPrivilegedService.changePassword(email, newPassword);
+    }
+
     @GetMapping("/users/all")
     List<User> getAllUser(){
         return userService.getAllUsers();

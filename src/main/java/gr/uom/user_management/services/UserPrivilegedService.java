@@ -6,10 +6,10 @@ import gr.uom.user_management.repositories.OrganizationRepository;
 import gr.uom.user_management.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +23,9 @@ public class UserPrivilegedService {
 
     @Autowired
     OrganizationRepository organizationRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Transactional
     public User givePrivilegeToUser(String email) {
@@ -42,6 +45,14 @@ public class UserPrivilegedService {
                 HttpStatus.NOT_FOUND, "User with email "+ email +" doesn't exist!"
         ));
         userRepository.delete(user);
+    }
+
+    @Transactional
+    public void changePassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "User with email "+ email +" doesn't exist!"
+        ));
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
 
     @Transactional
