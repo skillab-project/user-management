@@ -50,6 +50,11 @@ public class UserPrivilegedController {
         return userPrivilegedService.changeUserOrganization(email, name);
     }
 
+    @PutMapping("/users/installation")
+    User changeUserInstallation(@RequestParam String email, @RequestParam String installation){
+        return userPrivilegedService.changeUserInstallation(email, installation);
+    }
+
     @PostMapping("/organization")
     Organization createOrganization(@RequestParam String name){
         return userPrivilegedService.createOrganization(name);

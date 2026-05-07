@@ -67,6 +67,15 @@ public class UserPrivilegedService {
         return user;
     }
 
+    @Transactional
+    public User changeUserInstallation(String email, String installation) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "User with email "+ email +" doesn't exist!"
+        ));
+        user.setInstallation(installation);
+        return user;
+    }
+
     public Organization createOrganization(String name) {
         Optional<Organization> optionalOrganization = organizationRepository.findByName(name);
         if(optionalOrganization.isPresent()){
