@@ -44,6 +44,12 @@ public class UserController {
         return userService.createUser(user, "citizen","");
     }
 
+    @DeleteMapping
+    void deleteUser(HttpServletRequest request){
+        DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
+        userService.deleteUser(decodedJWT.getClaim("id").asString());
+    }
+
     @GetMapping("/{id}")
     User getUser(@PathVariable String id){
         return userService.getUser(id);

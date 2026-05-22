@@ -96,6 +96,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public void deleteUser(String auth_id) {
+
+        userRepository.deleteById(UUID.fromString(auth_id));
+    }
 
     @Transactional
     public User updateUser(String auth_id, String id, String country, String streetAddress, String portfolio) {
