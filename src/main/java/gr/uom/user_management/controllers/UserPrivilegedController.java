@@ -42,7 +42,7 @@ public class UserPrivilegedController {
 
     @PostMapping("/users/create")
     User createUser(@RequestBody User user, @RequestParam String installation, @RequestParam String organization){
-        return userService.createUser(user, installation, organization);
+        return userService.createUserFromAdmin(user, installation, organization);
     }
 
     @PutMapping("/users/organization")

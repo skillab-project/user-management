@@ -69,4 +69,25 @@ public class MailSendingService {
         // Send email with HTML content
         sendHtmlEmail(toEmail, subject, htmlContent);
     }
+
+    public void sendAccountCreationEmail(String toEmail, String password, String frontendUrl) {
+        String subject = "Skillab | Account Created";
+        String url = frontendUrl + "/login";
+
+        // Load HTML template from file
+        String htmlContent = loadHtmlTemplate();
+
+        // Replace placeholders in the template with actual values
+        htmlContent = htmlContent.replace("{{GREETING_TEXT}}", "Hello!");
+        htmlContent = htmlContent.replace("{{GREETING_SUBTEXT}}", "An account was created for you by the administrator of the Skillab platform.");
+        htmlContent = htmlContent.replace("{{MAIL_BODY_TEXT}}", "Credentials. Email: "+ toEmail + "Password: "+ password);
+        htmlContent = htmlContent.replace("{{BUTTON_SECTION_HEADER_TEXT}}", "Click the button to go to the Skillab platform");
+        htmlContent = htmlContent.replace("{{BUTTON_SECTION_URL}}", url);
+        htmlContent = htmlContent.replace("{{BUTTON_TEXT}}", "Platform");
+        htmlContent = htmlContent.replace("{{BUTTON_SUB_TEXT}}", "If the button does not work, please copy and paste the following link in your browser: ");
+        htmlContent = htmlContent.replace("{{BUTTON_SUB_TEXT_CAPTION}}", url);
+
+        // Send email with HTML content
+        sendHtmlEmail(toEmail, subject, htmlContent);
+    }
 }

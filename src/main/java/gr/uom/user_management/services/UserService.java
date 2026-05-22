@@ -44,6 +44,34 @@ public class UserService {
 
     SecureRandom secureRandom = new SecureRandom();
 
+    public User createUserFromAdmin(User user, String installation, String organization) {
+        Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
+        if (!userOptional.isPresent()) {
+            String unEncodedPassword = user.getPassword();
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles("SIMPLE");
+            user.setInstallation(installation);
+            if(organization!=null && !organization.isEmpty()){
+                Optional<Organization> optionalOrganization = organizationRepository.findByName(organization);
+                optionalOrganization.ifPresent(user::setOrganization);
+            }
+            SystemConfiguration systemConfiguration = new SystemConfiguration();
+            user.setConfigurations(systemConfiguration);
+            systemConfiguration.setUser(user);
+
+            userRepository.save(user);
+
+            mailSendingService.sendAccountCreationEmail(
+                    user.getEmail(),
+                    unEncodedPassword,
+                    frontEndURL
+            );
+
+            return user;
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Email is used from another user");
+    }
+
     public User createUser(User user, String installation, String organization) {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         if (!userOptional.isPresent()) {
