@@ -80,7 +80,7 @@ public class MailSendingService {
         // Replace placeholders in the template with actual values
         htmlContent = htmlContent.replace("{{GREETING_TEXT}}", "Hello!");
         htmlContent = htmlContent.replace("{{GREETING_SUBTEXT}}", "An account was created for you by the administrator of the Skillab platform.");
-        htmlContent = htmlContent.replace("{{MAIL_BODY_TEXT}}", "Credentials. Email: "+ toEmail + "Password: "+ password);
+        htmlContent = htmlContent.replace("{{MAIL_BODY_TEXT}}", "Credentials. Email: "+ toEmail + " Password: "+ password);
         htmlContent = htmlContent.replace("{{BUTTON_SECTION_HEADER_TEXT}}", "Click the button to go to the Skillab platform");
         htmlContent = htmlContent.replace("{{BUTTON_SECTION_URL}}", url);
         htmlContent = htmlContent.replace("{{BUTTON_TEXT}}", "Platform");
