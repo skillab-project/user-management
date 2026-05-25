@@ -8,6 +8,7 @@ import gr.uom.user_management.models.Skill;
 import gr.uom.user_management.models.SystemConfiguration;
 import gr.uom.user_management.models.User;
 import gr.uom.user_management.repositories.UserRepository;
+import gr.uom.user_management.services.CVService;
 import gr.uom.user_management.services.SystemConfigurationService;
 import gr.uom.user_management.services.UserService;
 import gr.uom.user_management.utils.TokenUtil;
@@ -38,6 +39,9 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    CVService cvService;
 
     @PostMapping
     User createUser(@RequestBody User user){
@@ -111,6 +115,11 @@ public class UserController {
         return systemConfigurationService.updateUserSystemConfigurations(decodedJWT.getClaim("id").asString(), id,
                 filterDemandDataSources, filterDemandDataLimit, filterDemandOccupations, filterSupplyProfilesDataSources,
                 filterSupplyProfilesDataLimit, filterSupplyCoursesDataSources, filterSupplyCoursesDataLimit);
+    }
+
+    @PutMapping("/{id}/cv")
+    List<Skill> analyzeCV(){
+        return cvService.analyzeCV();
     }
 
     @GetMapping("/token/refresh")

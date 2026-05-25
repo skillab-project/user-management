@@ -29,6 +29,11 @@ public class Skill {
         this.user = user;
     }
 
+    public Skill(String skillId, String skillLabel){
+        this.skillId = skillId;
+        this.skillLabel = skillLabel;
+    }
+
     public Long getId() {
         return id;
     }
