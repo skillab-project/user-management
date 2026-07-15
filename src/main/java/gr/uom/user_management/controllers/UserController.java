@@ -119,7 +119,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}/cv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    List<Skill> analyzeCV(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+    List<Skill> analyzeCV(@PathVariable String id, @RequestParam("file") MultipartFile file) {
         return cvService.analyzeCV(file);
     }
 
