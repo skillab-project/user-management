@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -117,9 +118,9 @@ public class UserController {
                 filterSupplyProfilesDataLimit, filterSupplyCoursesDataSources, filterSupplyCoursesDataLimit);
     }
 
-    @PutMapping("/{id}/cv")
-    List<Skill> analyzeCV(){
-        return cvService.analyzeCV();
+    @PutMapping(value = "/{id}/cv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    List<Skill> analyzeCV(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        return cvService.analyzeCV(file);
     }
 
     @GetMapping("/token/refresh")
