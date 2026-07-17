@@ -3,6 +3,7 @@ package gr.uom.user_management.controllers;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.uom.user_management.controllers.dto.ResetPasswordRequest;
+import gr.uom.user_management.models.CvAnalysisJob;
 import gr.uom.user_management.models.Occupation;
 import gr.uom.user_management.models.Skill;
 import gr.uom.user_management.models.SystemConfiguration;
@@ -119,8 +120,14 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}/cv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    List<Skill> analyzeCV(@PathVariable String id, @RequestParam("file") MultipartFile file) {
-        return cvService.analyzeCV(file);
+    ResponseEntity<CvAnalysisJob> analyzeCV(@PathVariable String id, @RequestParam("file") MultipartFile file) {
+        CvAnalysisJob job = cvService.startAnalysis(id, file);
+        return ResponseEntity.accepted().body(job);
+    }
+
+    @GetMapping("/{id}/cv/{jobId}")
+    CvAnalysisJob getCvJob(@PathVariable String id, @PathVariable String jobId) {
+        return cvService.getJob(jobId);
     }
 
     @GetMapping("/token/refresh")
