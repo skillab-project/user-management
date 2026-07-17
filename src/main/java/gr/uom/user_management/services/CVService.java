@@ -41,9 +41,18 @@ public class CVService {
         return job;
     }
 
+    /**
+     * Returns the current job state. Once the job is DONE, the row is deleted
+     * right after it is loaded.
+     */
     public CvAnalysisJob getJob(String jobId) {
-        return jobRepository.findById(UUID.fromString(jobId))
+        CvAnalysisJob job = jobRepository.findById(UUID.fromString(jobId))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "CV analysis job not found: " + jobId));
+
+        if (job.getStatus().equals("DONE")) {
+            jobRepository.delete(job);
+        }
+        return job;
     }
 }
