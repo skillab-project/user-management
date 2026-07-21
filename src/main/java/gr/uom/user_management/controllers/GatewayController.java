@@ -47,6 +47,9 @@ public class GatewayController {
     @Value("${futuretechnologytrendsidentifier.service.url}")
     private String futureTechnologyTrendsIdentifierUrl;
 
+    @Value("${autojobads.service.url}")
+    private String autoJobAdsUrl;
+
     // --- Hiring Proxy ---
     @RequestMapping("/hiring-management-backend/**")
     public ResponseEntity<byte[]> proxyHiring(
@@ -99,6 +102,15 @@ public class GatewayController {
             HttpServletRequest request
     ) throws URISyntaxException {
         return handleProxy(requestEntity, request, futureTechnologyTrendsIdentifierUrl, "/future-technology-trends-identifier-backend");
+    }
+
+    // --- Auto Job Ads Proxy ---
+    @RequestMapping("/auto-job-ads-backend/**")
+    public ResponseEntity<byte[]> proxyAutoJobAdsUrl(
+            RequestEntity<byte[]> requestEntity,
+            HttpServletRequest request
+    ) throws URISyntaxException {
+        return handleProxy(requestEntity, request, autoJobAdsUrl, "/auto-job-ads-backend");
     }
 
 
