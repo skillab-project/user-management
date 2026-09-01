@@ -50,6 +50,9 @@ public class GatewayController {
     @Value("${autojobads.service.url}")
     private String autoJobAdsUrl;
 
+    @Value("$curriculumskills.service.url")
+    private String curriculumSkillsUrl;
+
     // --- Hiring Proxy ---
     @RequestMapping("/hiring-management-backend/**")
     public ResponseEntity<byte[]> proxyHiring(
@@ -111,6 +114,14 @@ public class GatewayController {
             HttpServletRequest request
     ) throws URISyntaxException {
         return handleProxy(requestEntity, request, autoJobAdsUrl, "/auto-job-ads-backend");
+    }
+
+    @RequestMapping("/curriculum-skills-backend/**")
+    public ResponseEntity<byte[]> proxyCurriculumSKillsUrl(
+            RequestEntity<byte[]> requestEntity,
+            HttpServletRequest request
+    ) throws URISyntaxException {
+        return handleProxy(requestEntity, request, curriculumSkillsUrl, "/curriculum-skills-backend");
     }
 
 
