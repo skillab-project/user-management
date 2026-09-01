@@ -50,7 +50,7 @@ public class GatewayController {
     @Value("${autojobads.service.url}")
     private String autoJobAdsUrl;
 
-    @Value("$curriculumskills.service.url")
+    @Value("${curriculumskills.service.url}")
     private String curriculumSkillsUrl;
 
     // --- Hiring Proxy ---
