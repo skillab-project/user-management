@@ -32,7 +32,7 @@ services:
       - POLICYSUCCESSEVALUATOR_SERVICE_URL=http://policy-success-evaluator:8878
       - FUTURETECHNOLOGYTRENDSIDENTIFIER_SERVICE_URL=http://future-technology-trends-identifier:8876
       - AUTOJOBADS_SERVICE_URL=http://auto-job-ads:8891
-      - CURRICULUMSKILLS_SERVICE_URL=http://curriculum-skills:5002
+      - CURRICULUMSKILLS_SERVICE_URL=http://curriculum-skills:8000
     ports:
       - "8081:8080"
     restart: unless-stopped
