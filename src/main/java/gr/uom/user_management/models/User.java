@@ -24,6 +24,9 @@ public class User {
     private String portfolio;
     //citizen, industry, education, policy-education, policy-industry
     private String installation;
+    // Free-form JSON for installation-specific info (e.g. education: {"universityName","country"})
+    @Column(columnDefinition = "TEXT")
+    private String extraInfo;
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
@@ -134,6 +137,14 @@ public class User {
 
     public void setInstallation(String installation) {
         this.installation = installation;
+    }
+
+    public String getExtraInfo() {
+        return extraInfo;
+    }
+
+    public void setExtraInfo(String extraInfo) {
+        this.extraInfo = extraInfo;
     }
 
     public Organization getOrganization() {

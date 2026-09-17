@@ -63,9 +63,10 @@ public class UserController {
 
     @PutMapping("/{id}")
     User updateUser(HttpServletRequest request, @PathVariable String id, @RequestParam(required = false) String country,
-                    @RequestParam(required = false) String streetAddress, @RequestParam(required = false) String portfolio) {
+                    @RequestParam(required = false) String streetAddress, @RequestParam(required = false) String portfolio,
+                    @RequestParam(required = false) String extraInfo) {
         DecodedJWT decodedJWT= TokenUtil.getDecodedJWTfromToken(request.getHeader(AUTHORIZATION));
-        return userService.updateUser(decodedJWT.getClaim("id").asString(), id, country, streetAddress, portfolio);
+        return userService.updateUser(decodedJWT.getClaim("id").asString(), id, country, streetAddress, portfolio, extraInfo);
     }
 
     @PutMapping("/{id}/skills")

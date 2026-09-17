@@ -102,7 +102,7 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(String auth_id, String id, String country, String streetAddress, String portfolio) {
+    public User updateUser(String auth_id, String id, String country, String streetAddress, String portfolio, String extraInfo) {
         System.out.println(UUID.fromString(id));
         User user = userRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new ResponseStatusException(
@@ -120,6 +120,9 @@ public class UserService {
         }
         if(portfolio!=null && !portfolio.isEmpty()){
             user.setPortfolio(portfolio);
+        }
+        if(extraInfo!=null && !extraInfo.isEmpty()){
+            user.setExtraInfo(extraInfo);
         }
 
         return user;
