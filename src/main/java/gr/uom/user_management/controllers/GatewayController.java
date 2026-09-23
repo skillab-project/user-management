@@ -53,6 +53,9 @@ public class GatewayController {
     @Value("${curriculumskills.service.url}")
     private String curriculumSkillsUrl;
 
+    @Value("${organizationalskillsrecommender.service.url}")
+    private String organizationalSkillsRecommenderUrl;
+
     // --- Hiring Proxy ---
     @RequestMapping("/hiring-management-backend/**")
     public ResponseEntity<byte[]> proxyHiring(
@@ -122,6 +125,14 @@ public class GatewayController {
             HttpServletRequest request
     ) throws URISyntaxException {
         return handleProxy(requestEntity, request, curriculumSkillsUrl, "/curriculum-skills-backend");
+    }
+
+    @RequestMapping("/organizational-skills-recommender/**")
+    public ResponseEntity<byte[]> proxyOrganizationalSkillsRecommender(
+            RequestEntity<byte[]> requestEntity,
+            HttpServletRequest request
+    ) throws URISyntaxException {
+        return handleProxy(requestEntity, request, organizationalSkillsRecommenderUrl, "/organizational-skills-recommender");
     }
 
 
