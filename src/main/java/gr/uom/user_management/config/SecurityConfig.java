@@ -52,6 +52,8 @@ public class SecurityConfig {
                         .mvcMatchers("/future-technology-trends-identifier-backend/**").authenticated()
                         .mvcMatchers(HttpMethod.GET,"/curriculum-skills-backend/**").permitAll()
                         .mvcMatchers(HttpMethod.POST,"/curriculum-skills-backend/**").authenticated()
+                        .mvcMatchers("/organizational-skills-recommender/**").authenticated()
+                        .mvcMatchers("/organization-needs/**").authenticated()
                         .anyRequest().authenticated())
                 .userDetailsService(jpaUserDetailsService)
                 .addFilter(new CustomAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class))))
